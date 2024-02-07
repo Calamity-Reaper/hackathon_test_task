@@ -1,5 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { join, normalize } from 'path';
+import { Algorithm } from 'jsonwebtoken';
 
 @Injectable()
 export class AppConfigService {
@@ -17,8 +19,12 @@ export class AppConfigService {
     return this.configService.getOrThrow('COOKIE_MAX_AGE');
   }
 
-  get SALT_LENGTH(): number {
-    return this.configService.getOrThrow('SALT_LENGTH');
+  get PASSWORD_SALT(): number {
+    return +this.configService.getOrThrow('PASSWORD_SALT');
+  }
+
+  get TOKEN_SALT(): number {
+    return +this.configService.getOrThrow('TOKEN_SALT');
   }
 
   get JWT_ALGORITHM(): Algorithm {
@@ -39,5 +45,15 @@ export class AppConfigService {
 
   get JWT_REFRESH_EXPIRES_IN(): string {
     return this.configService.getOrThrow('JWT_REFRESH_EXPIRES_IN');
+  }
+
+  get SERVE_STATIC_PATH(): string {
+    return normalize(
+      join(__dirname, '..', '..', this.configService.getOrThrow('SERVE_STATIC_FOLDER')),
+    );
+  }
+
+  get SERVE_STATIC_PREFIX(): string {
+    return '/' + this.configService.getOrThrow('SERVE_STATIC_PREFIX');
   }
 }

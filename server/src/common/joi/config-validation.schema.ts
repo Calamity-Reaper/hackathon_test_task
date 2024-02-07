@@ -6,7 +6,8 @@ export const ConfigValidationSchema = Joi.object({
   COOKIE_NAME: Joi.string(),
   COOKIE_MAX_AGE: Joi.number(),
 
-  SALT_LENGTH: Joi.number(),
+  PASSWORD_SALT: Joi.number(),
+  TOKEN_SALT: Joi.number(),
 
   JWT_ALGORITHM: Joi.string(),
   JWT_ACCESS_SECRET: Joi.string(),

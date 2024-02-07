@@ -2,7 +2,10 @@ import { Module } from '@nestjs/common';
 import { AppConfigModule } from './app-config/app-config.module';
 import { ConfigModule } from '@nestjs/config';
 import { PrismaModule } from './prisma/prisma.module';
-import { ConfigValidationSchema } from './common/config-validation.schema';
+import { ConfigValidationSchema } from './common/joi/config-validation.schema';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
+import { TokensModule } from './tokens/tokens.module';
 
 @Module({
   imports: [
@@ -12,6 +15,9 @@ import { ConfigValidationSchema } from './common/config-validation.schema';
     }),
     AppConfigModule,
     PrismaModule,
+    AuthModule,
+    UsersModule,
+    TokensModule,
   ],
   controllers: [],
   providers: [],
