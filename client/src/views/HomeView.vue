@@ -1,5 +1,9 @@
-<script setup lang="ts"></script>
+<script setup lang="ts">
+import AuctionCards from "@/components/AuctionCards.vue";
+</script>
 
 <template>
-  <main></main>
+  <main class="w-screen h-screen">
+    <AuctionCards/>
+  </main>
 </template>
