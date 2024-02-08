@@ -8,4 +8,6 @@
 
 body {
     background-color: #EFF1EF;
+    scrollbar-gutter: stable;
+    /*overflow: hidden;*/
 }

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 
+import VButton from "@/components/ui/VButton.vue";
 </script>
 
 <template>
@@ -36,9 +37,9 @@
           </p>
         </div>
       </div>
-      <button class="text-sm bg-green-primary py-1.5 rounded-xl hover:brightness-90 transition-all duration-200">
+      <VButton color="primary" text="sm">
         Place a bet
-      </button>
+      </VButton>
     </div>
   </div>
 </template>

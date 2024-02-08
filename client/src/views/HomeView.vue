@@ -3,7 +3,7 @@ import AuctionCards from "@/components/AuctionCards.vue";
 </script>
 
 <template>
-  <main class="w-screen h-screen">
+  <main>
     <AuctionCards/>
   </main>
 </template>
