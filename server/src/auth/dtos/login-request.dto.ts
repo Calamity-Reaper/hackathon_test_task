@@ -9,7 +9,7 @@ export default class LoginRequestDto
   @Length(1, 255)
   username: string;
 
-  @ApiProperty({ minLength: 1, maxLength: 255 })
-  @Length(1, 255)
+  @ApiProperty({ minLength: 8, maxLength: 255 })
+  @Length(8, 255)
   password: string;
 }
