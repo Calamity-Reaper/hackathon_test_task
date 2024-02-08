@@ -7,7 +7,7 @@ export default class SignupRequestDto
   extends LoginRequestDto
   implements Pick<Prisma.UserCreateWithoutTokenInput, 'username' | 'email' | 'password'>
 {
-  @ApiProperty()
+  @ApiProperty({ minLength: 1, maxLength: 255 })
   @Length(1, 255)
   @IsEmail()
   email: string;

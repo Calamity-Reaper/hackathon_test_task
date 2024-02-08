@@ -5,11 +5,11 @@ import { ApiProperty } from '@nestjs/swagger';
 export default class LoginRequestDto
   implements Pick<Prisma.UserCreateWithoutTokenInput, 'username' | 'password'>
 {
-  @ApiProperty()
+  @ApiProperty({ minLength: 1, maxLength: 255 })
   @Length(1, 255)
   username: string;
 
-  @ApiProperty()
+  @ApiProperty({ minLength: 1, maxLength: 255 })
   @Length(1, 255)
   password: string;
 }

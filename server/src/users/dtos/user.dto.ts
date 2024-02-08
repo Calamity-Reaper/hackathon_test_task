@@ -5,7 +5,7 @@ export default class UserDto implements Omit<User, 'password' | 'roles'> {
   @ApiProperty()
   id: string;
 
-  @ApiProperty()
+  @ApiProperty({ minLength: 1, maxLength: 255 })
   username: string;
 
   @ApiProperty()
