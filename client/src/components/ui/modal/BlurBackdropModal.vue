@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 interface Props {
   size?: 'medium' | 'large'
   position?: 'right' | 'center' | 'left'
@@ -18,18 +17,20 @@ const modalSize = {
 
 const props = withDefaults(defineProps<Props>(), {
   position: 'left',
-  size: 'medium',
+  size: 'medium'
 })
 </script>
 
 <template>
-  <div class="h-full w-full p-14 fixed top-0 z-10 backdrop-blur-md">
-    <div class="bg-white flex flex-col gap-5 p-5 h-full rounded-2xl" :class="modalSize['medium']">
-      <slot/>
+  <div class="fixed top-0 z-10 h-full w-full p-14 backdrop-blur-md">
+    <div
+      class="flex h-full flex-col gap-5 rounded-2xl bg-white p-5"
+      :class="modalSize['medium']"
+      @click.stop
+    >
+      <slot />
     </div>
   </div>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

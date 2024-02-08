@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import AuctionCards from "@/components/AuctionCards.vue";
+import AuctionCards from '@/components/AuctionCards.vue'
 </script>
 
 <template>
   <main>
-    <AuctionCards/>
+    <AuctionCards />
   </main>
 </template>

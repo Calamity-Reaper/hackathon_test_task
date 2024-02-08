@@ -1,11 +1,11 @@
-<script setup lang="ts">
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
-  <img class="w-5 h-5 cursor-pointer hover:scale-125 transition-all" src="@/assets/img/icon/MenuClose.svg" alt="">
+  <img
+    class="h-5 w-5 cursor-pointer transition-all hover:scale-125"
+    src="@/assets/img/icon/MenuClose.svg"
+    alt=""
+  />
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>

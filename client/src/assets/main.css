@@ -2,12 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer components {
+  .gutter-stable {
+    scrollbar-gutter: stable;
+  }
+}
+
 * {
-    font-family: 'Montserrat', sans-serif;
+  font-family: 'Montserrat', sans-serif;
 }
 
 body {
-    background-color: #EFF1EF;
-    scrollbar-gutter: stable;
-    /*overflow: hidden;*/
+  background-color: #eff1ef;
+  /*overflow: hidden;*/
 }

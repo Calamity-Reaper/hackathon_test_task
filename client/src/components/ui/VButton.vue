@@ -1,5 +1,4 @@
 <script setup lang="ts">
-
 interface Props {
   color: 'primary' | 'secondary'
   text: 'sm' | 'xl'
@@ -18,11 +17,12 @@ const props = defineProps<Props>()
 </script>
 
 <template>
-  <button class="w-full py-1.5 rounded-xl hover:brightness-90 transition-all duration-200" :class="[buttonColors[color], buttonTextSize[text]]">
+  <button
+    class="w-full rounded-xl py-1.5 transition-all duration-200 hover:brightness-90"
+    :class="[buttonColors[color], buttonTextSize[text]]"
+  >
     <slot></slot>
   </button>
 </template>
 
-<style scoped>
-
-</style>
+<style scoped></style>
