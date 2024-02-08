@@ -1,4 +1,3 @@
-import { applyDecorators, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-export const RefreshGuard = () => applyDecorators(UseGuards(AuthGuard('jwt-refresh')));
+export default class RefreshGuard extends AuthGuard('jwt-refresh') {}

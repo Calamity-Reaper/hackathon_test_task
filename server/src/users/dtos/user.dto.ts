@@ -1,7 +1,7 @@
-import { User as TUser } from '@prisma/client';
+import { User } from '../types/user.prisma-types';
 import { ApiProperty } from '@nestjs/swagger';
 
-export default class User implements Omit<TUser, 'password'> {
+export default class UserDto implements Omit<User, 'password' | 'roles'> {
   @ApiProperty()
   id: string;
 
@@ -11,8 +11,11 @@ export default class User implements Omit<TUser, 'password'> {
   @ApiProperty()
   email: string;
 
-  @ApiProperty({ nullable: true })
+  @ApiProperty({ nullable: true, example: null })
   avatar: string | null;
+
+  @ApiProperty({ isArray: true, type: String })
+  roles: string[];
 
   @ApiProperty()
   createdAt: Date;
@@ -20,11 +23,12 @@ export default class User implements Omit<TUser, 'password'> {
   @ApiProperty()
   updatedAt: Date;
 
-  constructor(user: TUser) {
+  constructor(user: User) {
     this.id = user.id;
     this.username = user.username;
     this.email = user.email;
     this.avatar = user.avatar;
+    this.roles = user.roles.map((ur) => ur.role.name);
     this.createdAt = user.createdAt;
     this.updatedAt = user.updatedAt;
   }
