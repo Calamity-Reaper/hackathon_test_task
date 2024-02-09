@@ -3,6 +3,8 @@ import * as Joi from 'joi';
 export const ConfigValidationSchema = Joi.object({
   PORT: Joi.number().optional().default(5000),
 
+  CLIENT_URL: Joi.string(),
+
   COOKIE_NAME: Joi.string(),
   COOKIE_MAX_AGE: Joi.number(),
 

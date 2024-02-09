@@ -11,6 +11,10 @@ export class AppConfigService {
     return +this.configService.getOrThrow('PORT');
   }
 
+  get CLIENT_URL(): string {
+    return this.configService.getOrThrow('CLIENT_URL');
+  }
+
   get COOKIE_NAME(): string {
     return this.configService.getOrThrow('COOKIE_NAME');
   }

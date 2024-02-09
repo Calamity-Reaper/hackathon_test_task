@@ -5,6 +5,7 @@ import * as bcryptjs from 'bcryptjs';
 import { UsersService } from '../users/users.service';
 import { AppConfigService } from '../app-config/app-config.service';
 import { TokensService } from '../tokens/tokens.service';
+import UserDto from '../users/dtos/user.dto';
 
 @Injectable()
 export class AuthService {
@@ -26,7 +27,7 @@ export class AuthService {
       user: { connect: { id: user.id } },
     });
 
-    return { id: user.id, ...tokens };
+    return { user: new UserDto(user), ...tokens };
   }
 
   async login({ email, password }: LoginRequestDto) {
@@ -52,7 +53,7 @@ export class AuthService {
       );
     }
 
-    return { id: user.id, ...tokens };
+    return { user: new UserDto(user), ...tokens };
   }
 
   async refresh(id: string, token: string) {
@@ -71,7 +72,7 @@ export class AuthService {
       await bcryptjs.hash(tokens.refreshToken, this.config.TOKEN_SALT),
     );
 
-    return tokens;
+    return { user: new UserDto(user), ...tokens };
   }
 
   async logout(id: string) {
