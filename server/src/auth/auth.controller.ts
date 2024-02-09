@@ -6,16 +6,17 @@ import {
   Post,
   Req,
   Res,
+  UseGuards,
 } from '@nestjs/common';
-import SignupRequest from './dtos/signup-request.dto';
+import SignupRequestDto from './dtos/signup-request.dto';
 import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AppConfigService } from '../app-config/app-config.service';
-import LoginRequest from './dtos/login-request.dto';
-import { AccessGuard } from './guards/access.guard';
-import { RefreshGuard } from './guards/refresh.guard';
+import LoginRequestDto from './dtos/login-request.dto';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
-import AuthResponse from './dtos/auth-response.dto';
+import AuthResponseDto from './dtos/auth-response.dto';
+import RefreshGuard from './guards/refresh.guard';
+import AccessGuard from './guards/access.guard';
 
 @ApiTags('auth')
 @Controller('auth')
@@ -25,12 +26,12 @@ export class AuthController {
     private config: AppConfigService,
   ) {}
 
-  @ApiResponse({ status: 201, type: AuthResponse })
+  @ApiResponse({ status: 201, type: AuthResponseDto })
   @Post('signup')
   async signup(
-    @Body() dto: SignupRequest,
+    @Body() dto: SignupRequestDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<AuthResponse> {
+  ): Promise<AuthResponseDto> {
     const { id, accessToken, refreshToken } = await this.authService.signup(dto);
 
     res.cookie(this.config.COOKIE_NAME, refreshToken, {
@@ -42,12 +43,12 @@ export class AuthController {
     return { id, accessToken };
   }
 
-  @ApiResponse({ status: 201, type: AuthResponse })
+  @ApiResponse({ status: 201, type: AuthResponseDto })
   @Post('login')
   async login(
-    @Body() dto: LoginRequest,
+    @Body() dto: LoginRequestDto,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<AuthResponse> {
+  ): Promise<AuthResponseDto> {
     const { id, accessToken, refreshToken } = await this.authService.login(dto);
 
     res.cookie(this.config.COOKIE_NAME, refreshToken, {
@@ -59,13 +60,13 @@ export class AuthController {
     return { id, accessToken };
   }
 
-  @ApiResponse({ status: 201, type: AuthResponse })
-  @RefreshGuard()
+  @ApiResponse({ status: 201, type: AuthResponseDto })
+  @UseGuards(RefreshGuard)
   @Post('refresh')
   async refresh(
     @Req() req: Request,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<AuthResponse> {
+  ): Promise<AuthResponseDto> {
     if (!req.user?.id || !req.user.refreshToken) {
       throw new InternalServerErrorException();
     }
@@ -84,7 +85,7 @@ export class AuthController {
     return { id: req.user.id, accessToken };
   }
 
-  @AccessGuard()
+  @UseGuards(AccessGuard)
   @Delete('logout')
   async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
     if (!req.user?.id) {

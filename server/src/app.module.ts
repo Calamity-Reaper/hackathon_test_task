@@ -6,6 +6,8 @@ import { ConfigValidationSchema } from './common/joi/config-validation.schema';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { TokensModule } from './tokens/tokens.module';
+import { RolesModule } from './roles/roles.module';
+import { FilesModule } from './files/files.module';
 
 @Module({
   imports: [
@@ -18,6 +20,8 @@ import { TokensModule } from './tokens/tokens.module';
     AuthModule,
     UsersModule,
     TokensModule,
+    RolesModule,
+    FilesModule,
   ],
   controllers: [],
   providers: [],

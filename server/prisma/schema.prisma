@@ -12,11 +12,12 @@ model User {
   username  String   @unique @db.VarChar(255)
   email     String   @unique @db.VarChar(255)
   password  String   @db.VarChar(255)
-  avatar    String?  @db.VarChar(36)
+  avatar    String?  @db.VarChar(48)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
   token Token?
+  roles UserRole[]
 
   @@map("users")
 }
@@ -30,4 +31,25 @@ model Token {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("tokens")
+}
+
+model Role {
+  id          Int     @id @default(autoincrement()) @db.SmallInt
+  name        String  @unique @db.VarChar(255)
+  description String? @db.VarChar(255)
+
+  users UserRole[]
+
+  @@map("roles")
+}
+
+model UserRole {
+  userId String @map("user_id") @db.VarChar(36)
+  roleId Int    @map("role_id") @db.SmallInt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  role Role @relation(fields: [roleId], references: [id], onDelete: Cascade)
+
+  @@id([userId, roleId])
+  @@map("users_roles")
 }
