@@ -27,7 +27,7 @@ export class AuthService {
       user: { connect: { id: user.id } },
     });
 
-    return { id: user.id, ...tokens, user: new UserDto(user) };
+    return { user: new UserDto(user), ...tokens };
   }
 
   async login({ email, password }: LoginRequestDto) {
@@ -53,7 +53,7 @@ export class AuthService {
       );
     }
 
-    return { id: user.id, ...tokens, user: new UserDto(user) };
+    return { user: new UserDto(user), ...tokens };
   }
 
   async refresh(id: string, token: string) {
@@ -72,7 +72,7 @@ export class AuthService {
       await bcryptjs.hash(tokens.refreshToken, this.config.TOKEN_SALT),
     );
 
-    return { ...tokens, user: new UserDto(user) };
+    return { user: new UserDto(user), ...tokens };
   }
 
   async logout(id: string) {
