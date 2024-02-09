@@ -12,7 +12,7 @@ model User {
   username  String   @unique @db.VarChar(255)
   email     String   @unique @db.VarChar(255)
   password  String   @db.VarChar(255)
-  avatar    String?  @db.VarChar(36)
+  avatar    String?  @db.VarChar(48)
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 

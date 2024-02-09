@@ -29,8 +29,8 @@ export class AuthService {
     return { id: user.id, ...tokens };
   }
 
-  async login({ username, password }: LoginRequestDto) {
-    const user = await this.usersService.find({ username });
+  async login({ email, password }: LoginRequestDto) {
+    const user = await this.usersService.find({ email });
 
     if (!(await bcryptjs.compare(password, user.password))) {
       throw new BadRequestException('invalid password');
