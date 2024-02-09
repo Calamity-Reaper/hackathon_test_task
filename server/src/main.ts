@@ -13,6 +13,7 @@ const start = async () => {
 
   const config = app.get(AppConfigService);
 
+  app.enableCors({ credentials: true, origin: config.CLIENT_URL });
   app.use(helmet());
   app.use(cookieParser());
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
