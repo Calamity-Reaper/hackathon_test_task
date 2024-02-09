@@ -9,7 +9,7 @@ import { PrismaClientExceptionFilter } from './common/filters/prisma-client-exce
 import { NestExpressApplication } from '@nestjs/platform-express';
 
 const start = async () => {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, { cors: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const config = app.get(AppConfigService);
 
