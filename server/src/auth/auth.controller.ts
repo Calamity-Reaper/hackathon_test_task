@@ -32,7 +32,7 @@ export class AuthController {
     @Body() dto: SignupRequestDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AuthResponseDto> {
-    const { id, accessToken, refreshToken } = await this.authService.signup(dto);
+    const { id, accessToken, refreshToken, user } = await this.authService.signup(dto);
 
     res.cookie(this.config.COOKIE_NAME, refreshToken, {
       maxAge: this.config.COOKIE_MAX_AGE,
@@ -40,7 +40,7 @@ export class AuthController {
       sameSite: 'strict',
     });
 
-    return { id, accessToken };
+    return { id, accessToken, user };
   }
 
   @ApiResponse({ status: 201, type: AuthResponseDto })
@@ -49,7 +49,7 @@ export class AuthController {
     @Body() dto: LoginRequestDto,
     @Res({ passthrough: true }) res: Response,
   ): Promise<AuthResponseDto> {
-    const { id, accessToken, refreshToken } = await this.authService.login(dto);
+    const { id, accessToken, refreshToken, user } = await this.authService.login(dto);
 
     res.cookie(this.config.COOKIE_NAME, refreshToken, {
       maxAge: this.config.COOKIE_MAX_AGE,
@@ -57,7 +57,7 @@ export class AuthController {
       sameSite: 'strict',
     });
 
-    return { id, accessToken };
+    return { id, accessToken, user };
   }
 
   @ApiResponse({ status: 201, type: AuthResponseDto })
@@ -71,7 +71,7 @@ export class AuthController {
       throw new InternalServerErrorException();
     }
 
-    const { accessToken, refreshToken } = await this.authService.refresh(
+    const { accessToken, refreshToken, user } = await this.authService.refresh(
       req.user.id,
       req.user.refreshToken,
     );
@@ -82,7 +82,7 @@ export class AuthController {
       sameSite: 'strict',
     });
 
-    return { id: req.user.id, accessToken };
+    return { id: req.user.id, accessToken, user };
   }
 
   @UseGuards(AccessGuard)
