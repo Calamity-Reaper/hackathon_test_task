@@ -61,10 +61,14 @@ export class UsersService {
       await this.filesService.delete(user.avatar);
     }
 
+    const avatar = await this.filesService.save(file);
+
     await this.prisma.user.update({
       where: { id },
-      data: { avatar: await this.filesService.save(file) },
+      data: { avatar },
     });
+
+    return avatar;
   }
 
   async deleteAvatar(id: string) {
