@@ -41,8 +41,4 @@ export class CategoriesService {
 
     return category.lots.map((lc) => new LotDto(lc.lot));
   }
-
-  async findMany(names: string[]) {
-    return this.prisma.category.findMany({ where: { name: { in: names } } });
-  }
 }

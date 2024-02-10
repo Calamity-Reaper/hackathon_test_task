@@ -3,9 +3,9 @@ import { Prisma } from '@prisma/client';
 import { PrismaService } from '../prisma/prisma.service';
 import { User, UserWithToken } from './types/user.prisma-types';
 import { Role } from '../roles/role.enum';
-import * as bcryptjs from 'bcryptjs';
 import { AppConfigService } from '../app-config/app-config.service';
 import { FilesService } from '../files/files.service';
+import { hash } from 'bcryptjs';
 
 @Injectable()
 export class UsersService {
@@ -37,7 +37,7 @@ export class UsersService {
 
   async update(where: Prisma.UserWhereUniqueInput, data: Prisma.UserUpdateInput): Promise<User> {
     if (data.password) {
-      data.password = await bcryptjs.hash(data.password as string, this.config.PASSWORD_SALT);
+      data.password = await hash(data.password as string, this.config.PASSWORD_SALT);
     }
 
     return this.prisma.user.update({

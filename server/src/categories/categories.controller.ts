@@ -10,7 +10,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import LotQueryDto from '../lots/dtos/lot-query.dto';
-import { ApiBearerAuth, ApiOperation, ApiResponse } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import AccessGuard from '../auth/guards/access.guard';
 import RolesGuard from '../roles/roles.guard';
 import { Roles } from '../roles/roles.decorator';
@@ -21,6 +21,7 @@ import { CategoriesService } from './categories.service';
 import CategoryUpdateDto from './dtos/category-update.dto';
 import LotDto from '../lots/dtos/lot.dto';
 
+@ApiTags('categories')
 @ApiBearerAuth()
 @Controller('categories')
 export class CategoriesController {
