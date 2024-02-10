@@ -18,6 +18,8 @@ model User {
 
   token Token?
   roles UserRole[]
+  lots  Lot[]
+  bids  Bid[]
 
   @@map("users")
 }
@@ -52,4 +54,67 @@ model UserRole {
 
   @@id([userId, roleId])
   @@map("users_roles")
+}
+
+model Lot {
+  id          String   @id @default(uuid()) @db.VarChar(36)
+  sellerId    String   @map("seller_id") @db.VarChar(36)
+  name        String   @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  startBid    Int      @map("start_bid")
+  minPitch    Int      @map("min_pitch")
+  lastBid     Int?     @map("last_bid")
+  state       State    @default(OPEN)
+  images      String[] @db.VarChar(48)
+  closesAt    DateTime @map("closes_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  seller     User          @relation(fields: [sellerId], references: [id])
+  categories LotCategory[]
+  bids       Bid[]
+
+  @@map("lots")
+}
+
+model Category {
+  id          Int     @id @default(autoincrement()) @db.SmallInt
+  name        String  @unique @db.VarChar(255)
+  description String? @db.VarChar(255)
+
+  items LotCategory[]
+
+  @@map("categories")
+}
+
+model LotCategory {
+  lotId      String @map("lot_id") @db.VarChar(36)
+  categoryId Int    @map("category_id") @db.SmallInt
+
+  lot      Lot      @relation(fields: [lotId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([lotId, categoryId])
+  @@map("lots_categories")
+}
+
+model Bid {
+  id        String   @id @default(uuid()) @map("id_id") @db.VarChar(36)
+  userId    String   @map("user_id") @db.VarChar(36)
+  lotId     String   @map("lot_id") @db.VarChar(36)
+  amount    Int
+  createdAt DateTime @default(now()) @map("created_at")
+
+  user User @relation(fields: [userId], references: [id])
+  lot  Lot  @relation(fields: [lotId], references: [id], onDelete: Cascade)
+
+  @@map("bids")
+}
+
+enum State {
+  OPEN
+  CLOSED
+  CANCELLED
+
+  @@map("STATE")
 }

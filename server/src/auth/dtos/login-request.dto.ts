@@ -3,7 +3,7 @@ import { IsEmail, Length, MaxLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
 export default class LoginRequestDto
-  implements Pick<Prisma.UserCreateWithoutTokenInput, 'email' | 'password'>
+  implements Omit<Prisma.UserCreateWithoutTokenInput, 'username'>
 {
   @ApiProperty({ maxLength: 255 })
   @MaxLength(255)

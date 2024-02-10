@@ -7,6 +7,10 @@ const main = async () => {
   const adminRole = await prisma.role.create({ data: { name: 'admin' } });
 
   console.log({ userRole, adminRole });
+
+  const otherCategory = await prisma.category.create({ data: { name: 'Other' } });
+
+  console.log({ otherCategory });
 };
 
 main()

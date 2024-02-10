@@ -8,6 +8,9 @@ import { UsersModule } from './users/users.module';
 import { TokensModule } from './tokens/tokens.module';
 import { RolesModule } from './roles/roles.module';
 import { FilesModule } from './files/files.module';
+import { LotsModule } from './lots/lots.module';
+import { BidsModule } from './bids/bids.module';
+import { CategoriesModule } from './categories/categories.module';
 
 @Module({
   imports: [
@@ -22,6 +25,9 @@ import { FilesModule } from './files/files.module';
     TokensModule,
     RolesModule,
     FilesModule,
+    LotsModule,
+    BidsModule,
+    CategoriesModule,
   ],
   controllers: [],
   providers: [],

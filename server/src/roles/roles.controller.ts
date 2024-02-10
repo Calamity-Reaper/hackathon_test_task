@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import RoleUpdateDto from './dtos/role-update.dto';
 import AccessGuard from '../auth/guards/access.guard';
@@ -8,6 +8,7 @@ import { Role } from './role.enum';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import RoleDto from './dtos/role.dto';
 import UserDto from '../users/dtos/user.dto';
+import UserQueryDto from '../users/dtos/user-query.dto';
 
 @ApiTags('roles')
 @UseGuards(AccessGuard)
@@ -37,7 +38,7 @@ export class RolesController {
 
   @ApiResponse({ status: 200, type: [UserDto] })
   @Get(':name/users')
-  async getUsers(@Param('name') name: string): Promise<UserDto[]> {
+  async getUsers(@Param('name') name: string, @Query() dto: UserQueryDto): Promise<UserDto[]> {
     return this.rolesService.findUsers(name);
   }
 }

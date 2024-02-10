@@ -61,6 +61,7 @@ export class UsersController {
 
   @ApiConsumes('multipart/form-data')
   @ApiBody({ schema: { type: 'object', properties: { img: { type: 'file', format: 'binary' } } } })
+  @ApiResponse({ type: String })
   @Post('me/avatar')
   @UseInterceptors(FileInterceptor('img'))
   async setMyAvatar(
@@ -72,12 +73,12 @@ export class UsersController {
         .build(),
     )
     file: Express.Multer.File,
-  ) {
+  ): Promise<string> {
     if (!req.user?.id) {
       throw new InternalServerErrorException();
     }
 
-    await this.usersService.setAvatar(req.user.id, file);
+    return this.usersService.setAvatar(req.user.id, file);
   }
 
   @Delete('me/avatar')
