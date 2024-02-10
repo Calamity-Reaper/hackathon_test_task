@@ -9,6 +9,7 @@ import { useUserStore } from '@/stores/user'
 import ErrorModal from '@/components/ui/modal/ErrorModal.vue'
 import { ValidationError } from 'yup'
 import { AxiosError } from 'axios'
+import ChangeUserInfo from '@/components/ui/modal/ChangeUserInfo.vue'
 
 interface ErrorModalInfo {
   isVisible: boolean
@@ -19,11 +20,16 @@ const userStore = useUserStore()
 
 const showMenu = ref<boolean>(false)
 const showAuth = ref<boolean>(false)
+const showChangeUserInfo = ref<boolean>(false)
 const errorModal = ref<ErrorModalInfo>()
 
 function handleShowAuth() {
   showMenu.value = false
   showAuth.value = true
+}
+function handleShowChangeUserInfo() {
+  showMenu.value = false
+  showChangeUserInfo.value = true
 }
 
 function toggleScroll(show: boolean) {
@@ -61,14 +67,17 @@ onErrorCaptured((err) => {
   <RouterView />
   <VFadeTransition>
     <SidebarMenu
-      :show="showMenu"
       v-if="showMenu"
       @close="showMenu = false"
       @show-auth="handleShowAuth"
+      @show-personal-info="handleShowChangeUserInfo"
     />
   </VFadeTransition>
   <VFadeTransition>
-    <AuthorizationModal :show="showAuth" v-if="showAuth" @close="showAuth = false" />
+    <AuthorizationModal v-if="showAuth" @close="showAuth = false" />
+  </VFadeTransition>
+  <VFadeTransition>
+    <ChangeUserInfo v-if="showChangeUserInfo" @close="showChangeUserInfo = false" />
   </VFadeTransition>
   <VFadeTransition>
     <ErrorModal v-if="errorModal?.isVisible" :message="errorModal?.error" />

@@ -1,11 +1,11 @@
 import { defineStore } from 'pinia'
-import type { IUser } from '@/models/IUser'
+import type { IPatchData, IUser } from '@/models/IUser'
 import AuthService from '@/services/AuthService'
 import UsersService from '@/services/UsersService'
 import { AxiosError } from 'axios'
 
 interface State {
-  user: IUser | null
+  user: IUser
   isLogin: boolean
 }
 
@@ -13,7 +13,7 @@ export const useUserStore = defineStore('user', {
   state: (): State => {
     return {
       isLogin: false,
-      user: null
+      user: {} as IUser
     }
   },
   actions: {
@@ -62,7 +62,7 @@ export const useUserStore = defineStore('user', {
         const response = await AuthService.logout()
         localStorage.removeItem('token')
         this.isLogin = false
-        this.user = null
+        this.user = {} as IUser
       } catch (e) {
         if (e instanceof AxiosError) {
           throw new Error(e.response?.data.message)
@@ -77,6 +77,34 @@ export const useUserStore = defineStore('user', {
         localStorage.setItem('token', response.data.accessToken)
         this.user = response.data.user
         this.isLogin = true
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          throw new Error(e.response?.data.message)
+        } else {
+          console.log(e)
+        }
+      }
+    },
+    async patchMe(patchData: IPatchData) {
+      try {
+        const response = await UsersService.patchMe(patchData)
+        for (const key in patchData) {
+          if (patchData[key] && key !== 'password') {
+            this.user[key] = patchData[key]
+          }
+        }
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          throw new Error(e.response?.data.message)
+        } else {
+          console.log(e)
+        }
+      }
+    },
+    async postMeAvatar(avatar: FormData) {
+      try {
+        const response = await UsersService.postMeAvatar(avatar)
+        this.user.avatar = response.data as unknown as string
       } catch (e) {
         if (e instanceof AxiosError) {
           throw new Error(e.response?.data.message)

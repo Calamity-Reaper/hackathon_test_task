@@ -1,23 +1,19 @@
 import type { AxiosResponse } from 'axios'
-import type { IUser } from '@/models/IUser'
+import type { IPatchData, IUser } from '@/models/IUser'
 import $api from '@/http'
 
 export default class UsersService {
   static async getMe(): Promise<AxiosResponse<IUser>> {
     return $api.get<IUser>('/users/me')
   }
-  static async patchMe(
-    username?: string,
-    password?: string,
-    email?: string
-  ): Promise<AxiosResponse<void>> {
-    return $api.patch<void>('/users/me', { username, password, email })
+  static async patchMe(patchData: IPatchData): Promise<AxiosResponse<void>> {
+    return $api.patch<void>('/users/me', patchData)
   }
   static async deleteMe(): Promise<AxiosResponse<void>> {
     return $api.delete<void>('/users/me')
   }
-  static async postMeAvatar(img?: File): Promise<AxiosResponse<void>> {
-    return $api.post<void>('/users/me/avatar', { img })
+  static async postMeAvatar(img: FormData): Promise<AxiosResponse<void>> {
+    return $api.post<void>('/users/me/avatar', img)
   }
   static async deleteMeAvatar(): Promise<AxiosResponse<void>> {
     return $api.delete<void>('/users/me/avatar')

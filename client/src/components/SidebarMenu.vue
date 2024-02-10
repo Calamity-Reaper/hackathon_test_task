@@ -7,7 +7,7 @@ import { API_STATIC } from '@/http'
 
 const userStore = useUserStore()
 
-const emit = defineEmits(['close', 'showAuth'])
+const emit = defineEmits(['close', 'showAuth', 'showPersonalInfo'])
 
 async function logout() {
   await userStore.logout()
@@ -22,19 +22,21 @@ async function logout() {
       <template v-if="userStore.isLogin && userStore.user">
         <div class="flex flex-col items-center justify-center gap-2">
           <img
-            class="h-40 w-40"
+            class="h-40 w-40 rounded-full"
+            crossorigin="use-credentials"
             :src="userStore.user?.avatar ? `${API_STATIC + userStore.user.avatar}` : `/avatar.webp`"
-            alt=""
+            alt="Avatar"
           />
-          <p class="text-2xl font-bold">@{{ userStore.user.username }}</p>
+          <p class="text-2xl font-bold">@{{ userStore.user?.username }}</p>
           <VButton color="secondary" text="xl"> Personal Area </VButton>
           <VButton color="secondary" text="xl"> Auctions </VButton>
+          <VButton color="secondary" text="xl" @click="emit('showPersonalInfo')">
+            Edit profile
+          </VButton>
         </div>
         <div class="flex flex-col gap-2">
           <VButton color="primary" text="xl"> Create + </VButton>
-          <VButton v-if="userStore.isLogin" @click="logout" color="danger" text="xl">
-            Log out
-          </VButton>
+          <VButton @click="logout" color="danger" text="xl"> Log out </VButton>
         </div>
       </template>
       <template v-else>
