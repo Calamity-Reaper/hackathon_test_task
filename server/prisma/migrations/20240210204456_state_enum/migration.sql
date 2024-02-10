@@ -6,7 +6,7 @@ CREATE TABLE "lots" (
     "id" VARCHAR(36) NOT NULL,
     "seller_id" VARCHAR(36) NOT NULL,
     "name" VARCHAR(255) NOT NULL,
-    "description" VARCHAR(255),
+    "description" VARCHAR(5000),
     "start_bid" INTEGER NOT NULL,
     "min_pitch" INTEGER NOT NULL,
     "last_bid" INTEGER,

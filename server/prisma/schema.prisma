@@ -60,7 +60,7 @@ model Lot {
   id          String   @id @default(uuid()) @db.VarChar(36)
   sellerId    String   @map("seller_id") @db.VarChar(36)
   name        String   @db.VarChar(255)
-  description String?  @db.VarChar(255)
+  description String?  @db.VarChar(5000)
   startBid    Int      @map("start_bid")
   minPitch    Int      @map("min_pitch")
   lastBid     Int?     @map("last_bid")
@@ -82,7 +82,7 @@ model Category {
   name        String  @unique @db.VarChar(255)
   description String? @db.VarChar(255)
 
-  items LotCategory[]
+  lots LotCategory[]
 
   @@map("categories")
 }
