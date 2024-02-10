@@ -15,12 +15,13 @@ import LotUpdateDto from './dtos/lot-update.dto';
 import LotCreateDto from './dtos/lot-create.dto';
 import LotQueryDto from './dtos/lot-query.dto';
 import LotDto from './dtos/lot.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { LotsService } from './lots.service';
 import AccessGuard from '../auth/guards/access.guard';
 
 @ApiTags('lots')
+@ApiBearerAuth()
 @Controller('lots')
 export class LotsController {
   constructor(private lotsService: LotsService) {}

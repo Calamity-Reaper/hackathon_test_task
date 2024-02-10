@@ -1,6 +1,8 @@
 import { Controller, Delete, Get, Param, Patch, Post, Query } from '@nestjs/common';
 import LotQueryDto from '../lots/dtos/lot-query.dto';
+import { ApiBearerAuth } from '@nestjs/swagger';
 
+@ApiBearerAuth()
 @Controller('categories')
 export class CategoriesController {
   @Post()

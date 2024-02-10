@@ -13,12 +13,13 @@ import { Request, Response } from 'express';
 import { AuthService } from './auth.service';
 import { AppConfigService } from '../app-config/app-config.service';
 import LoginRequestDto from './dtos/login-request.dto';
-import { ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import AuthResponseDto from './dtos/auth-response.dto';
 import RefreshGuard from './guards/refresh.guard';
 import AccessGuard from './guards/access.guard';
 
 @ApiTags('auth')
+@ApiBearerAuth()
 @Controller('auth')
 export class AuthController {
   constructor(
