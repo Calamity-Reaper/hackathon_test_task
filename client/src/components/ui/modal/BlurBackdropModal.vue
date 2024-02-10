@@ -22,9 +22,9 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <div class="fixed left-0 top-0 z-10 h-full w-full p-14 backdrop-blur-md">
+  <div class="fixed left-0 top-0 z-10 h-full w-full backdrop-blur-md md:p-14">
     <div
-      class="flex h-full flex-col gap-5 rounded-2xl bg-white p-5"
+      class="flex h-full flex-col gap-5 bg-white p-5 md:rounded-2xl"
       :class="[modalSize[size], modalPosition[position]]"
       @click.stop
     >

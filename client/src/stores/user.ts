@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import type { IUser } from '@/models/IUser'
 import AuthService from '@/services/AuthService'
 import UsersService from '@/services/UsersService'
+import { AxiosError } from 'axios'
 
 interface State {
   user: IUser | null
@@ -21,8 +22,8 @@ export const useUserStore = defineStore('user', {
         const userData = await UsersService.getMe()
         this.user = userData.data
       } catch (e) {
-        if (typeof e === 'string') {
-          throw new Error(e)
+        if (e instanceof AxiosError) {
+          throw new Error(e.response?.data.message)
         } else {
           console.log(e)
         }
@@ -32,11 +33,11 @@ export const useUserStore = defineStore('user', {
       try {
         const response = await AuthService.login(email, password)
         localStorage.setItem('token', response.data.accessToken)
+        this.user = response.data.user
         this.isLogin = true
-        await this.getMe()
       } catch (e) {
-        if (typeof e === 'string') {
-          throw new Error(e)
+        if (e instanceof AxiosError) {
+          throw new Error(e.response?.data.message)
         } else {
           console.log(e)
         }
@@ -46,11 +47,11 @@ export const useUserStore = defineStore('user', {
       try {
         const response = await AuthService.register(email, username, password)
         localStorage.setItem('token', response.data.accessToken)
+        this.user = response.data.user
         this.isLogin = true
-        await this.getMe()
       } catch (e) {
-        if (typeof e === 'string') {
-          throw new Error(e)
+        if (e instanceof AxiosError) {
+          throw new Error(e.response?.data.message)
         } else {
           console.log(e)
         }
@@ -61,10 +62,24 @@ export const useUserStore = defineStore('user', {
         const response = await AuthService.logout()
         localStorage.removeItem('token')
         this.isLogin = false
-        await this.getMe()
+        this.user = null
       } catch (e) {
-        if (typeof e === 'string') {
-          throw new Error(e)
+        if (e instanceof AxiosError) {
+          throw new Error(e.response?.data.message)
+        } else {
+          console.log(e)
+        }
+      }
+    },
+    async refresh() {
+      try {
+        const response = await AuthService.refresh()
+        localStorage.setItem('token', response.data.accessToken)
+        this.user = response.data.user
+        this.isLogin = true
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          throw new Error(e.response?.data.message)
         } else {
           console.log(e)
         }

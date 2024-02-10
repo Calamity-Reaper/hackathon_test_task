@@ -1,4 +1,6 @@
+import type { IUser } from '@/models/IUser'
+
 export interface AuthResponse {
   accessToken: string
-  id: string
+  user: IUser
 }

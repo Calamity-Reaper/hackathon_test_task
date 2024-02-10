@@ -17,6 +17,6 @@ export default class AuthService {
     return $api.post<AuthResponse>('/auth/refresh')
   }
   static async logout(): Promise<AxiosResponse<void>> {
-    return $api.post<void>('/auth/logout')
+    return $api.delete<void>('/auth/logout')
   }
 }
