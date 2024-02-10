@@ -61,6 +61,7 @@ export class UsersController {
 
   @ApiConsumes('multipart/form-data')
   @ApiBody({ schema: { type: 'object', properties: { img: { type: 'file', format: 'binary' } } } })
+  @ApiResponse({ type: String })
   @Post('me/avatar')
   @UseInterceptors(FileInterceptor('img'))
   async setMyAvatar(
