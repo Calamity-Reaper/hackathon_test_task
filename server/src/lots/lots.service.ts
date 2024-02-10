@@ -18,6 +18,7 @@ export class LotsService {
       data: {
         seller: { connect: { id: userId } },
         ...data,
+        closesAt: new Date(data.closesAt),
         categories: { create: { category: { connect: { name: 'other' } } } },
       },
       include: { categories: { select: { category: { select: { name: true } } } } },
