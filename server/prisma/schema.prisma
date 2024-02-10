@@ -18,6 +18,7 @@ model User {
 
   token Token?
   roles UserRole[]
+  lots  Lot[]
 
   @@map("users")
 }
@@ -52,4 +53,65 @@ model UserRole {
 
   @@id([userId, roleId])
   @@map("users_roles")
+}
+
+model Lot {
+  id          String   @id @default(uuid()) @db.VarChar(36)
+  name        String   @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  sellerId    String   @map("seller_id") @db.VarChar(26)
+  startBid    Int      @map("start_bid") @db.SmallInt
+  minPitch    Int      @map("min_pitch") @db.SmallInt
+  closesAt    DateTime @map("closes_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+
+  seller     User          @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  categories LotCategory[]
+  state      LotState?
+
+  @@map("lots")
+}
+
+model Category {
+  id          Int     @id @default(autoincrement()) @db.SmallInt
+  name        String  @unique @db.VarChar(255)
+  description String? @db.VarChar(255)
+
+  items LotCategory[]
+
+  @@map("categories")
+}
+
+model LotCategory {
+  lotId      String @map("lot_id") @db.VarChar(36)
+  categoryId Int    @map("category_id") @db.SmallInt
+
+  lot      Lot      @relation(fields: [lotId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([lotId, categoryId])
+  @@map("lots_categories")
+}
+
+model State {
+  id          Int     @id @default(autoincrement()) @db.SmallInt
+  name        String  @unique @db.VarChar(255)
+  description String? @db.VarChar(255)
+
+  lots LotState[]
+
+  @@map("states")
+}
+
+model LotState {
+  lotId       String  @unique @map("lot_id") @db.VarChar(36)
+  stateId     Int     @map("state_id") @db.SmallInt
+  description String? @db.VarChar(255)
+
+  lot  Lot   @relation(fields: [lotId], references: [id], onDelete: Cascade)
+  sate State @relation(fields: [stateId], references: [id], onDelete: Cascade)
+
+  @@id([lotId, stateId])
+  @@map("lots_states")
 }
