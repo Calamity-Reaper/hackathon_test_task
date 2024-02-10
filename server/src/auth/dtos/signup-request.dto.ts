@@ -5,7 +5,7 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export default class SignupRequestDto
   extends LoginRequestDto
-  implements Pick<Prisma.UserCreateWithoutTokenInput, 'username' | 'email' | 'password'>
+  implements Prisma.UserCreateWithoutTokenInput
 {
   @ApiProperty({ minLength: 1, maxLength: 255 })
   @Length(1, 255)
