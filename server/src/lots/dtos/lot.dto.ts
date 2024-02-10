@@ -9,7 +9,7 @@ export default class LotDto implements Omit<Lot, 'categories'> {
   @ApiProperty({ minLength: 1, maxLength: 255 })
   name: string;
 
-  @ApiProperty({ minLength: 1, maxLength: 5000, nullable: true })
+  @ApiProperty({ type: String, minLength: 1, maxLength: 5000, nullable: true, example: null })
   description: string | null;
 
   @ApiProperty()
@@ -21,7 +21,7 @@ export default class LotDto implements Omit<Lot, 'categories'> {
   @ApiProperty({ minimum: 1 })
   minPitch: number;
 
-  @ApiProperty({ minimum: 1, nullable: true })
+  @ApiProperty({ type: Number, minimum: 1, nullable: true, example: null })
   lastBid: number | null;
 
   @ApiProperty({ enum: State })
