@@ -16,11 +16,10 @@ model User {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  token      Token?
-  roles      UserRole[]
-  lots       Lot[]
-  closedLots ClosedLot[]
-  bids       Bid[]
+  token Token?
+  roles UserRole[]
+  lots  Lot[]
+  bids  Bid[]
 
   @@map("users")
 }
@@ -58,17 +57,22 @@ model UserRole {
 }
 
 model Lot {
-  id          String  @id @default(uuid()) @db.VarChar(36)
-  name        String  @db.VarChar(255)
-  description String? @db.VarChar(255)
-  sellerId    String  @map("seller_id") @db.VarChar(26)
+  id          String   @id @default(uuid()) @db.VarChar(36)
+  sellerId    String   @map("seller_id") @db.VarChar(36)
+  name        String   @db.VarChar(255)
+  description String?  @db.VarChar(255)
+  startBid    Int      @map("start_bid")
+  minPitch    Int      @map("min_pitch")
+  lastBid     Int?     @map("last_bid")
+  state       State    @default(OPEN)
+  images      String[] @db.VarChar(48)
+  closesAt    DateTime @map("closes_at")
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
 
-  seller       User          @relation(fields: [sellerId], references: [id], onDelete: Cascade)
-  categories   LotCategory[]
-  bids         Bid[]
-  openLot      OpenLot?
-  closedLot    ClosedLot?
-  cancelledLot CancelledLot?
+  seller     User          @relation(fields: [sellerId], references: [id])
+  categories LotCategory[]
+  bids       Bid[]
 
   @@map("lots")
 }
@@ -94,43 +98,8 @@ model LotCategory {
   @@map("lots_categories")
 }
 
-model OpenLot {
-  lotId     String   @id @map("lot_id") @db.VarChar(36)
-  startBid  Int      @map("start_bid")
-  lastBid   Int      @map("last_bid")
-  minPitch  Int      @map("min_pitch")
-  closesAt  DateTime @map("closes_at")
-  createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
-
-  lot Lot @relation(fields: [lotId], references: [id], onDelete: Cascade)
-
-  @@map("open_lots")
-}
-
-model ClosedLot {
-  lotId        String   @id @map("lot_id") @db.VarChar(36)
-  winnerId     String   @map("winner_id") @db.VarChar(36)
-  winningBidId String   @map("winning_bid_id") @db.VarChar(36)
-  createdAt    DateTime @default(now()) @map("created_at")
-
-  lot    Lot  @relation(fields: [lotId], references: [id], onDelete: Cascade)
-  winner User @relation(fields: [winnerId], references: [id])
-
-  @@map("closed_lots")
-}
-
-model CancelledLot {
-  lotId     String   @id @map("lot_id") @db.VarChar(36)
-  createdAt DateTime @default(now()) @map("created_at")
-
-  lot Lot @relation(fields: [lotId], references: [id], onDelete: Cascade)
-
-  @@map("cancelled_lots")
-}
-
 model Bid {
-  id        String   @id @map("id_id") @db.VarChar(36)
+  id        String   @id @default(uuid()) @map("id_id") @db.VarChar(36)
   userId    String   @map("user_id") @db.VarChar(36)
   lotId     String   @map("lot_id") @db.VarChar(36)
   amount    Int
@@ -140,4 +109,12 @@ model Bid {
   lot  Lot  @relation(fields: [lotId], references: [id], onDelete: Cascade)
 
   @@map("bids")
+}
+
+enum State {
+  OPEN
+  CLOSED
+  CANCELLED
+
+  @@map("STATE")
 }
