@@ -5,12 +5,13 @@ import AccessGuard from '../auth/guards/access.guard';
 import RolesGuard from './roles.guard';
 import { Roles } from './roles.decorator';
 import { Role } from './role.enum';
-import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import RoleDto from './dtos/role.dto';
 import UserDto from '../users/dtos/user.dto';
 import UserQueryDto from '../users/dtos/user-query.dto';
 
 @ApiTags('roles')
+@ApiBearerAuth()
 @UseGuards(AccessGuard)
 @Controller('roles')
 export class RolesController {

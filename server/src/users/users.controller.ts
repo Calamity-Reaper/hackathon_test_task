@@ -15,7 +15,14 @@ import {
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Request } from 'express';
-import { ApiBody, ApiConsumes, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiConsumes,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 import UserDto from './dtos/user.dto';
 import AccessGuard from '../auth/guards/access.guard';
 import RolesGuard from '../roles/roles.guard';
@@ -26,6 +33,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { MbToB } from '../common/utils/mb-to-b';
 
 @ApiTags('users')
+@ApiBearerAuth()
 @UseGuards(AccessGuard)
 @Controller('users')
 export class UsersController {
