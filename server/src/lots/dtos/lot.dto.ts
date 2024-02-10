@@ -9,7 +9,7 @@ export default class LotDto implements Omit<Lot, 'categories'> {
   @ApiProperty({ minLength: 1, maxLength: 255 })
   name: string;
 
-  @ApiProperty({ minLength: 1, maxLength: 255, nullable: true })
+  @ApiProperty({ minLength: 1, maxLength: 5000, nullable: true })
   description: string | null;
 
   @ApiProperty()

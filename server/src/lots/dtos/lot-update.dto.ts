@@ -10,7 +10,7 @@ export default class LotUpdateDto implements Omit<Prisma.LotUpdateInput, 'catego
 
   @ApiPropertyOptional({ minLength: 1, maxLength: 255, nullable: true })
   @IsOptional()
-  @Length(1, 255)
+  @Length(1, 5000)
   description?: string;
 
   @ApiPropertyOptional()

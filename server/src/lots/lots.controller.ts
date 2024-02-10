@@ -19,6 +19,7 @@ import { ApiBearerAuth, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { LotsService } from './lots.service';
 import AccessGuard from '../auth/guards/access.guard';
+import { Role } from '../roles/role.enum';
 
 @ApiTags('lots')
 @ApiBearerAuth()
@@ -70,10 +71,16 @@ export class LotsController {
       throw new InternalServerErrorException();
     }
 
-    await this.lotsService.update(id, req.user.id, dto);
+    await this.lotsService.update(id, req.user.id, dto, req.user.roles.includes(Role.Admin));
   }
 
   @UseGuards(AccessGuard)
   @Delete(':id')
-  async delete(@Param('id') id: string) {}
+  async delete(@Param('id') id: string, @Req() req: Request) {
+    if (!req.user?.id) {
+      throw new InternalServerErrorException();
+    }
+
+    await this.lotsService.delete(id, req.user.id, req.user.roles.includes(Role.Admin));
+  }
 }
