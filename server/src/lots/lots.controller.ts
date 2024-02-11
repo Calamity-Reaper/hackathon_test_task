@@ -29,9 +29,6 @@ import ParseJsonPipe from '../common/pipes/parse-json.pipe';
 import LotCreateDto from './dtos/lot-create.dto';
 import { MbToB } from '../common/utils/mb-to-b';
 import BidQueryDto from '../bids/dtos/bid-query.dto';
-import BidDto from '../bids/dtos/bid.dto';
-import UserQueryDto from '../users/dtos/user-query.dto';
-import UserBidderDto from '../users/dtos/user-bidder.dto';
 
 @ApiTags('lots')
 @ApiBearerAuth()
@@ -146,7 +143,7 @@ export class LotsController {
       throw new InternalServerErrorException();
     }
 
-    await this.lotsService.update(id, req.user.id, dto, files, req.user.roles.includes(Role.Admin));
+    return this.lotsService.update(id, req.user.id, dto, files, req.user.roles.includes(Role.Admin));
   }
 
   @UseGuards(AccessGuard)
@@ -160,12 +157,7 @@ export class LotsController {
   }
 
   @Get(':id/bids')
-  async getBids(@Param('id') id: string, @Query() dto: BidQueryDto): Promise<BidDto[]> {
+  async getBids(@Param('id') id: string, @Query() dto: BidQueryDto) {
     return this.lotsService.findBids(id, dto);
-  }
-
-  @Get(':id/users')
-  async getUser(@Param('id') id: string, @Query() dto: UserQueryDto): Promise<UserBidderDto[]> {
-    return this.lotsService.findUsers(id, dto);
   }
 }

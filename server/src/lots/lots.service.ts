@@ -7,7 +7,6 @@ import LotQueryDto from './dtos/lot-query.dto';
 import LotCreateDto from './dtos/lot-create.dto';
 import { FilesService } from '../files/files.service';
 import BidQueryDto from '../bids/dtos/bid-query.dto';
-import UserQueryDto from '../users/dtos/user-query.dto';
 
 @Injectable()
 export class LotsService {
@@ -161,26 +160,15 @@ export class LotsService {
     const lot = await this.prisma.lot.findUniqueOrThrow({
       where: { id },
       include: {
-        bids: { orderBy: { [dto.orderBy]: dto.sortOrder }, take: dto.take, skip: dto.skip },
-      },
-    });
-
-    return lot.bids;
-  }
-
-  async findUsers(id: string, dto: UserQueryDto) {
-    const lot = await this.prisma.lot.findUniqueOrThrow({
-      where: { id },
-      include: {
         bids: {
-          orderBy: { [dto.orderBy]: dto.sortOrder },
           select: { user: { select: { id: true, username: true, email: true, avatar: true } } },
-          skip: dto.skip,
+          orderBy: { [dto.orderBy]: dto.sortOrder },
           take: dto.take,
+          skip: dto.skip,
         },
       },
     });
 
-    return lot.bids.map((b) => b.user);
+    return lot.bids;
   }
 }
