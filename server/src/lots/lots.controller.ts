@@ -30,6 +30,7 @@ import LotCreateDto from './dtos/lot-create.dto';
 import { MbToB } from '../common/utils/mb-to-b';
 import BidQueryDto from '../bids/dtos/bid-query.dto';
 import LotWithSellerDto from './dtos/lot-with-seller.dto';
+import BidWithUserBidderDto from '../bids/dtos/bid-with-user-bidder.dto';
 
 @ApiTags('lots')
 @ApiBearerAuth()
@@ -122,6 +123,7 @@ export class LotsController {
       },
     },
   })
+  @ApiResponse({ status: 200, type: LotDto })
   @UseGuards(AccessGuard)
   @UseInterceptors(FilesInterceptor('imgs', 10))
   @Patch(':id')
@@ -144,17 +146,19 @@ export class LotsController {
         .build({ fileIsRequired: false }),
     )
     files: Express.Multer.File[],
-  ) {
+  ): Promise<LotDto> {
     if (!req.user?.id) {
       throw new InternalServerErrorException();
     }
 
-    return this.lotsService.update(
-      id,
-      req.user.id,
-      dto,
-      files,
-      req.user.roles.includes(Role.Admin),
+    return new LotDto(
+      await this.lotsService.update(
+        id,
+        req.user.id,
+        dto,
+        files,
+        req.user.roles.includes(Role.Admin),
+      ),
     );
   }
 
@@ -168,8 +172,12 @@ export class LotsController {
     await this.lotsService.delete(id, req.user.id, req.user.roles.includes(Role.Admin));
   }
 
+  @ApiResponse({ status: 200, type: [BidWithUserBidderDto] })
   @Get(':id/bids')
-  async getBids(@Param('id') id: string, @Query() dto: BidQueryDto) {
+  async getBids(
+    @Param('id') id: string,
+    @Query() dto: BidQueryDto,
+  ): Promise<BidWithUserBidderDto[]> {
     return this.lotsService.findBids(id, dto);
   }
 }

@@ -62,8 +62,8 @@ export class LotsService {
     dto: LotUpdateDto,
     files: Express.Multer.File[],
     force?: boolean,
-  ) {
-    let lot = await this.prisma.lot.findUniqueOrThrow({ where: { id } });
+  ): Promise<Lot>  {
+    const lot = await this.prisma.lot.findUniqueOrThrow({ where: { id } });
 
     if (lot.sellerId !== requesterId && !force) {
       throw new ForbiddenException();
@@ -88,12 +88,11 @@ export class LotsService {
       }
     }
 
-    let state = lot.state;
     if (lot.closesAt.getTime() <= Date.now()) {
-      state = State.CLOSED;
+      lot.state = State.CLOSED;
     }
 
-    lot = await this.prisma.lot.update({
+    return this.prisma.lot.update({
       where: { id },
       data: {
         name: dto.name,
@@ -102,13 +101,11 @@ export class LotsService {
         minPitch: dto.minPitch,
         closesAt: dto.closesAt ? new Date(dto.closesAt) : undefined,
         categories,
-        state,
+        state: lot.state,
         images: files.length ? lot.images : undefined,
       },
       include: { categories: { select: { category: { select: { name: true } } } } },
     });
-
-    return lot;
   }
 
   async updateState(id: string) {
