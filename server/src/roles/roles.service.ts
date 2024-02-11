@@ -11,17 +11,17 @@ export class RolesService {
     return this.prisma.role.findMany();
   }
 
-  async find(name: string): Promise<Role> {
-    return this.prisma.role.findUniqueOrThrow({ where: { name } });
+  async find(id: number): Promise<Role> {
+    return this.prisma.role.findUniqueOrThrow({ where: { id } });
   }
 
-  async update(name: string, data: Prisma.RoleUpdateInput) {
-    return this.prisma.role.update({ where: { name }, data });
+  async update(id: number, data: Prisma.RoleUpdateInput) {
+    return this.prisma.role.update({ where: { id }, data });
   }
 
-  async findUsers(name: string) {
+  async findUsers(id: number) {
     const role = await this.prisma.role.findUniqueOrThrow({
-      where: { name },
+      where: { id },
       include: {
         users: {
           include: {

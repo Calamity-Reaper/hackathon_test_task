@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Query,
   UseGuards,
@@ -34,24 +35,27 @@ export class RolesController {
   }
 
   @ApiResponse({ status: 200, type: RoleDto })
-  @Get(':name')
-  async get(@Param('name') name: string): Promise<RoleDto> {
-    return this.rolesService.find(name);
+  @Get(':id')
+  async get(@Param('id', new ParseIntPipe()) id: number): Promise<RoleDto> {
+    return this.rolesService.find(id);
   }
 
   @ApiOperation({ description: 'admin' })
   @Roles(Role.Admin)
   @UseGuards(RolesGuard)
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
-  @Patch(':name')
-  async update(@Param('name') name: string, @Body() dto: RoleUpdateDto) {
-    await this.rolesService.update(name, dto);
+  @Patch(':id')
+  async update(@Param('id', new ParseIntPipe()) id: number, @Body() dto: RoleUpdateDto) {
+    await this.rolesService.update(id, dto);
   }
 
   @ApiResponse({ status: 200, type: [UserDto] })
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
-  @Get(':name/users')
-  async getUsers(@Param('name') name: string, @Query() dto: UserQueryDto): Promise<UserDto[]> {
-    return this.rolesService.findUsers(name);
+  @Get(':id/users')
+  async getUsers(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Query() dto: UserQueryDto,
+  ): Promise<UserDto[]> {
+    return this.rolesService.findUsers(id);
   }
 }

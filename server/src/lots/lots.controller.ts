@@ -19,7 +19,7 @@ import {
 import LotUpdateDto from './dtos/lot-update.dto';
 import LotQueryDto from './dtos/lot-query.dto';
 import LotDto from './dtos/lot.dto';
-import { ApiBearerAuth, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiBody, ApiConsumes, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Request } from 'express';
 import { LotsService } from './lots.service';
 import AccessGuard from '../auth/guards/access.guard';
@@ -36,6 +36,15 @@ export class LotsController {
   constructor(private lotsService: LotsService) {}
 
   @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        data: { type: 'string' },
+        imgs: { type: 'array', items: { type: 'file', format: 'binary' } },
+      },
+    },
+  })
   @ApiResponse({ status: 201, type: LotDto })
   @UseGuards(AccessGuard)
   @UseInterceptors(FilesInterceptor('imgs'))
@@ -88,6 +97,16 @@ export class LotsController {
     return new LotDto(await this.lotsService.find({ id }));
   }
 
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        data: { type: 'string' },
+        imgs: { type: 'array', items: { type: 'file', format: 'binary' } },
+      },
+    },
+  })
   @UseGuards(AccessGuard)
   @UseInterceptors(FilesInterceptor('imgs'))
   @Patch(':id')
