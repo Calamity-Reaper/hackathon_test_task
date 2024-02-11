@@ -43,9 +43,9 @@ async function submitForm(event: Event) {
     if (selectedFiles.value) {
       const formData = new FormData()
       for (let i = 0; i < selectedFiles.value?.length; i++) {
-        formData.append('images[]', selectedFiles.value[i])
+        formData.append('imgs', selectedFiles.value[i])
       }
-      formData.append('lot-data', JSON.stringify(auctionData.value))
+      formData.append('data', JSON.stringify(auctionData.value))
       await auctionsStore.createAuction(formData)
     }
     ;(event.target as HTMLFormElement).reset()
