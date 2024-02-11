@@ -3,9 +3,16 @@ import VButton from '@/components/ui/VButton.vue'
 </script>
 
 <template>
-  <div class="flex h-[365px] w-[530px] rounded-xl bg-white">
-    <img src="@/assets/img/AuctionCard.png" alt="auction card" class="rounded-xl" />
-    <div class="flex flex-col gap-3 p-3.5">
+  <div class="flex h-fit w-full flex-col rounded-xl bg-white sm:h-[365px] sm:w-[530px] sm:flex-row">
+    <!--    <img-->
+    <!--      src="@/assets/img/AuctionCard.png"-->
+    <!--      alt="auction card"-->
+    <!--      class="h-[40%] w-full rounded-xl sm:h-full"-->
+    <!--    />-->
+    <div
+      class="h-[30vh] w-full rounded-xl bg-[url('../assets/img/AuctionCard.png')] bg-cover bg-center bg-no-repeat sm:h-full sm:grow sm:basis-0"
+    ></div>
+    <div class="flex flex-col gap-3 p-3.5 sm:grow sm:basis-0">
       <h2 class="text-xl font-bold">
         Random lot name with deep meaning random lot name with deep meaning
       </h2>
