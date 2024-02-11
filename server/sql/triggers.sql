@@ -1,14 +1,20 @@
-CREATE OR REPLACE FUNCTION after_bid_create_tg()
+CREATE OR REPLACE FUNCTION before_bid_create_tg()
     RETURNS TRIGGER AS
 $$
 DECLARE
-    _not_first BOOLEAN;
+    _exist BOOLEAN;
 BEGIN
-    SELECT EXISTS(SELECT 1 FROM bids b WHERE b.lot_id = NEW.lot_id AND b.user_id = NEW.user_id);
+    SELECT EXISTS(SELECT 1 FROM bids WHERE user_id = NEW.user_id AND lot_id = NEW.lot_id)
+    INTO _exist;
 
-    IF NOT _not_first THEN
+    IF _exist THEN
         UPDATE lots
-        SET participants_count = participants_count + 1
+        SET last_bid = NEW.amount
+        WHERE id = NEW.lot_id;
+    ELSE
+        UPDATE lots
+        SET participants_count = participants_count + 1,
+            last_bid           = NEW.amount
         WHERE id = NEW.lot_id;
     END IF;
 
@@ -16,8 +22,8 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER after_bid_create_hook
-    AFTER INSERT
+CREATE TRIGGER before_bid_create_hook
+    BEFORE INSERT
     ON bids
     FOR EACH ROW
-EXECUTE FUNCTION after_bid_create_tg();
+EXECUTE FUNCTION before_bid_create_tg();

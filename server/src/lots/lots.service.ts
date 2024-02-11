@@ -47,10 +47,6 @@ export class LotsService {
   }
 
   async find(where: Prisma.LotWhereUniqueInput): Promise<Lot> {
-    const l = await this.prisma.bid.groupBy({ by: 'userId', where: { lotId: where.id } });
-
-    console.log(l);
-
     return this.prisma.lot.findUniqueOrThrow({
       where,
       include: { categories: { select: { category: { select: { name: true } } } } },
