@@ -44,6 +44,7 @@ function selectFile(event: Event) {
 
 async function submitForm(event: Event) {
   for (const key in patchData.value) {
+    //Set empty fields to undefined for ignoring changes
     patchData.value[key] = patchData.value[key] === '' ? undefined : patchData.value[key]
   }
   try {
@@ -117,17 +118,11 @@ const emit = defineEmits(['close'])
           placeholder="New password"
           type="password"
         />
-        <VInput
-          id="fileInput"
-          @change="selectFile"
-          placeholder="New password"
-          type="file"
-          class="hidden"
-        />
+        <VInput id="fileInput" @change="selectFile" type="file" class="hidden" />
       </div>
       <div class="flex flex-col gap-2">
         <VButton type="submit" color="primary" text="xl"> Save </VButton>
-        <VButton color="danger" text="xl" @click="decline"> Decline changes </VButton>
+        <VButton type="reset" color="danger" text="xl" @click="decline"> Decline changes </VButton>
       </div>
     </form>
   </BlurBackdropModal>

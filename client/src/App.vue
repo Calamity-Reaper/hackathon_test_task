@@ -7,9 +7,9 @@ import VFadeTransition from '@/components/ui/transitions/VFadeTransition.vue'
 import AuthorizationModal from '@/components/ui/modal/AuthorizationModal.vue'
 import { useUserStore } from '@/stores/user'
 import ErrorModal from '@/components/ui/modal/ErrorModal.vue'
-import { ValidationError } from 'yup'
-import { AxiosError } from 'axios'
 import ChangeUserInfo from '@/components/ui/modal/ChangeUserInfo.vue'
+import CreateAuctionModal from '@/components/ui/modal/CreateAuctionModal.vue'
+import { useAuctionsStore } from '@/stores/auctions'
 
 interface ErrorModalInfo {
   isVisible: boolean
@@ -17,10 +17,12 @@ interface ErrorModalInfo {
 }
 
 const userStore = useUserStore()
+const auctionsStore = useAuctionsStore()
 
 const showMenu = ref<boolean>(false)
 const showAuth = ref<boolean>(false)
 const showChangeUserInfo = ref<boolean>(false)
+const showCreateAuction = ref<boolean>(false)
 const errorModal = ref<ErrorModalInfo>()
 
 function handleShowAuth() {
@@ -30,6 +32,10 @@ function handleShowAuth() {
 function handleShowChangeUserInfo() {
   showMenu.value = false
   showChangeUserInfo.value = true
+}
+function handleShowCreateAuction() {
+  showMenu.value = false
+  showCreateAuction.value = true
 }
 
 function toggleScroll(show: boolean) {
@@ -42,6 +48,8 @@ function toggleScroll(show: boolean) {
 
 watch(showMenu, toggleScroll)
 watch(showAuth, toggleScroll)
+watch(showChangeUserInfo, toggleScroll)
+watch(showCreateAuction, toggleScroll)
 
 onMounted(async () => {
   await userStore.refresh()
@@ -60,6 +68,10 @@ onErrorCaptured((err) => {
   }, 5000)
   return false
 })
+
+onMounted(async () => {
+  await auctionsStore.getAllCategories()
+})
 </script>
 
 <template>
@@ -71,6 +83,7 @@ onErrorCaptured((err) => {
       @close="showMenu = false"
       @show-auth="handleShowAuth"
       @show-personal-info="handleShowChangeUserInfo"
+      @show-create-auction="handleShowCreateAuction"
     />
   </VFadeTransition>
   <VFadeTransition>
@@ -81,6 +94,9 @@ onErrorCaptured((err) => {
   </VFadeTransition>
   <VFadeTransition>
     <ErrorModal v-if="errorModal?.isVisible" :message="errorModal?.error" />
+  </VFadeTransition>
+  <VFadeTransition>
+    <CreateAuctionModal v-if="showCreateAuction" @close="showCreateAuction = false" />
   </VFadeTransition>
 </template>
 

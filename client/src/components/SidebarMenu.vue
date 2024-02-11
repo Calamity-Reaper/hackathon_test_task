@@ -7,7 +7,7 @@ import { API_STATIC } from '@/http'
 
 const userStore = useUserStore()
 
-const emit = defineEmits(['close', 'showAuth', 'showPersonalInfo'])
+const emit = defineEmits(['close', 'showAuth', 'showPersonalInfo', 'showCreateAuction'])
 
 async function logout() {
   await userStore.logout()
@@ -35,7 +35,7 @@ async function logout() {
           </VButton>
         </div>
         <div class="flex flex-col gap-2">
-          <VButton color="primary" text="xl"> Create + </VButton>
+          <VButton color="primary" text="xl" @click="emit('showCreateAuction')"> Create + </VButton>
           <VButton @click="logout" color="danger" text="xl"> Log out </VButton>
         </div>
       </template>
@@ -45,7 +45,7 @@ async function logout() {
           <VButton color="secondary" text="xl"> Auctions </VButton>
         </div>
         <div class="flex flex-col gap-2">
-          <VButton color="primary" text="xl"> Create + </VButton>
+          <VButton color="primary" text="xl" @click="emit('showCreateAuction')"> Create + </VButton>
         </div>
       </template>
     </div>

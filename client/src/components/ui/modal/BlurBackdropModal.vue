@@ -1,6 +1,6 @@
 <script setup lang="ts">
 interface Props {
-  size?: 'medium' | 'large'
+  size?: 'medium' | 'large' | 'full'
   position?: 'right' | 'center' | 'left'
 }
 
@@ -12,7 +12,8 @@ const modalPosition = {
 
 const modalSize = {
   medium: ['md:w-[50vw] lg:w-[40vw] xl:w-[30vw] 2xl:w-[20vw]'],
-  large: ['md:w-[60vw] lg:w-[50vw] xl:w-[40vw] 2xl:w-[40vw]']
+  large: ['md:w-[60vw] lg:w-[50vw] xl:w-[40vw] 2xl:w-[40vw]'],
+  full: ['w-full']
 }
 
 const props = withDefaults(defineProps<Props>(), {
