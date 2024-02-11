@@ -76,6 +76,6 @@ export class CategoriesController {
     @Param('id', new ParseIntPipe()) id: number,
     @Query() dto: LotQueryDto,
   ): Promise<LotDto[]> {
-    return this.categoriesService.findLots(id);
+    return this.categoriesService.findLots(id, dto);
   }
 }

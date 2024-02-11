@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import LotDto from '../lots/dtos/lot.dto';
+import LotQueryDto from '../lots/dtos/lot-query.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -27,7 +28,7 @@ export class CategoriesService {
     return this.prisma.category.delete({ where: { id } });
   }
 
-  async findLots(id: number) {
+  async findLots(id: number, dto: LotQueryDto) {
     const category = await this.prisma.category.findUniqueOrThrow({
       where: { id },
       include: {
@@ -35,6 +36,9 @@ export class CategoriesService {
           include: {
             lot: { include: { categories: { select: { category: { select: { name: true } } } } } },
           },
+          orderBy: { [dto.orderBy]: dto.sortOrder },
+          skip: dto.skip,
+          take: dto.take,
         },
       },
     });
