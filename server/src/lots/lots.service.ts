@@ -120,12 +120,15 @@ export class LotsService {
     // const lots = await this.prisma.lot.findMany({ where: { id: { in: ids.map((i) => i.lotId) } } });
     //
     // console.log(lots, lots.length);
-    //
-    // return this.prisma.lot.findMany({
-    //   where: {
-    //     name: { contains: dto.name, mode: 'insensitive' },
-    //   },
-    //   orderBy: { [dto.orderBy]: dto.sortOrder },
-    // });
+
+    return this.prisma.lot.findMany({
+      where: {
+        name: { contains: dto.name, mode: 'insensitive' },
+      },
+      orderBy: { [dto.orderBy]: dto.sortOrder },
+      take: dto.take,
+      skip: dto.skip,
+      include: { categories: { select: { category: { select: { name: true } } } } },
+    });
   }
 }

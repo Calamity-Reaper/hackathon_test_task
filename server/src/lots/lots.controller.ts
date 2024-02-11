@@ -72,7 +72,7 @@ export class LotsController {
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Get()
   async getAll(@Query() dto: LotQueryDto): Promise<LotDto[]> {
-    return [];
+    return (await this.lotsService.findAll(dto)).map((l) => new LotDto(l));
   }
 
   @ApiResponse({ status: 200, type: [LotDto] })
