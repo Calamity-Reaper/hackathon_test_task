@@ -64,7 +64,7 @@ export class CategoriesController {
     await this.categoriesService.delete(name);
   }
 
-  @ApiResponse({ status: 200, type: [CategoryDto] })
+  @ApiResponse({ status: 200, type: [LotDto] })
   @Get(':name/lots')
   async getLots(@Param('name') name: string, @Query() dto: LotQueryDto): Promise<LotDto[]> {
     return this.categoriesService.findLots(name);

@@ -8,6 +8,6 @@ export default class CategoryDto implements Category {
   @ApiProperty({ minLength: 1, maxLength: 255 })
   name: string;
 
-  @ApiProperty({ minLength: 1, maxLength: 255, nullable: true })
+  @ApiProperty({ minLength: 1, maxLength: 255, nullable: true, example: null })
   description: string | null;
 }
