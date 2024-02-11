@@ -4,7 +4,14 @@ import { IsIn, IsOptional, IsPositive, Length, Min } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 
-const orderBy: (keyof Lot)[] = ['name', 'startBid', 'closesAt', 'createdAt', 'updatedAt'] as const;
+const orderBy: (keyof Lot)[] = [
+  'name',
+  'participantsCount',
+  'startBid',
+  'closesAt',
+  'createdAt',
+  'updatedAt',
+] as const;
 
 export default class LotQueryDto extends QueryDto {
   @IsOptional()

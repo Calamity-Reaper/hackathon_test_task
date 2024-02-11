@@ -34,6 +34,9 @@ export default class LotDto implements Omit<Lot, 'categories'> {
   categories: string[];
 
   @ApiProperty()
+  participantsCount: number;
+
+  @ApiProperty()
   closesAt: Date;
 
   @ApiProperty()
