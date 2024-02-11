@@ -131,4 +131,19 @@ export class LotsService {
       include: { categories: { select: { category: { select: { name: true } } } } },
     });
   }
+
+  async findCreated(id: string, dto: LotQueryDto) {
+    return this.prisma.lot.findMany({
+      where: {
+        name: { contains: dto.name, mode: 'insensitive' },
+        sellerId: id,
+      },
+      orderBy: { [dto.orderBy]: dto.sortOrder },
+      take: dto.take,
+      skip: dto.skip,
+      include: { categories: { select: { category: { select: { name: true } } } } },
+    });
+  }
+
+  async findParticipated(id: string, dto: LotQueryDto) {}
 }

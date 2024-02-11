@@ -79,8 +79,12 @@ export class LotsController {
   @UseGuards(AccessGuard)
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Get('my/created')
-  async getCreated(@Query() dto: LotQueryDto): Promise<LotDto[]> {
-    return [];
+  async getCreated(@Req() req: Request, @Query() dto: LotQueryDto): Promise<LotDto[]> {
+    if (!req.user?.id) {
+      throw new InternalServerErrorException();
+    }
+
+    return (await this.lotsService.findCreated(req.user.id, dto)).map((l) => new LotDto(l));
   }
 
   @ApiResponse({ status: 200, type: [LotDto] })
