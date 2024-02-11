@@ -29,6 +29,7 @@ import ParseJsonPipe from '../common/pipes/parse-json.pipe';
 import LotCreateDto from './dtos/lot-create.dto';
 import { MbToB } from '../common/utils/mb-to-b';
 import BidQueryDto from '../bids/dtos/bid-query.dto';
+import LotWithSellerDto from './dtos/lot-with-seller.dto';
 
 @ApiTags('lots')
 @ApiBearerAuth()
@@ -69,11 +70,11 @@ export class LotsController {
     return new LotDto(await this.lotsService.create(req.user.id, dto, files));
   }
 
-  @ApiResponse({ status: 200, type: [LotDto] })
+  @ApiResponse({ status: 200, type: [LotWithSellerDto] })
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Get()
-  async getAll(@Query() dto: LotQueryDto): Promise<LotDto[]> {
-    return (await this.lotsService.findAll(dto)).map((l) => new LotDto(l));
+  async getAll(@Query() dto: LotQueryDto): Promise<LotWithSellerDto[]> {
+    return (await this.lotsService.findAll(dto)).map((l) => new LotWithSellerDto(l));
   }
 
   @ApiResponse({ status: 200, type: [LotDto] })
@@ -88,22 +89,27 @@ export class LotsController {
     return (await this.lotsService.findCreated(req.user.id, dto)).map((l) => new LotDto(l));
   }
 
-  @ApiResponse({ status: 200, type: [LotDto] })
+  @ApiResponse({ status: 200, type: [LotWithSellerDto] })
   @UseGuards(AccessGuard)
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Get('my/participated')
-  async getParticipated(@Req() req: Request, @Query() dto: LotQueryDto): Promise<LotDto[]> {
+  async getParticipated(
+    @Req() req: Request,
+    @Query() dto: LotQueryDto,
+  ): Promise<LotWithSellerDto[]> {
     if (!req.user?.id) {
       throw new InternalServerErrorException();
     }
 
-    return (await this.lotsService.findParticipated(req.user.id, dto)).map((l) => new LotDto(l));
+    return (await this.lotsService.findParticipated(req.user.id, dto)).map(
+      (l) => new LotWithSellerDto(l),
+    );
   }
 
   @ApiResponse({ status: 200, type: LotDto })
   @Get(':id')
-  async get(@Param('id') id: string): Promise<LotDto> {
-    return new LotDto(await this.lotsService.find({ id }));
+  async get(@Param('id') id: string): Promise<LotWithSellerDto> {
+    return new LotWithSellerDto(await this.lotsService.find({ id }));
   }
 
   @ApiConsumes('multipart/form-data')
@@ -143,7 +149,13 @@ export class LotsController {
       throw new InternalServerErrorException();
     }
 
-    return this.lotsService.update(id, req.user.id, dto, files, req.user.roles.includes(Role.Admin));
+    return this.lotsService.update(
+      id,
+      req.user.id,
+      dto,
+      files,
+      req.user.roles.includes(Role.Admin),
+    );
   }
 
   @UseGuards(AccessGuard)

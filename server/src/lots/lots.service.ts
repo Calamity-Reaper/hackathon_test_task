@@ -1,7 +1,7 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { Prisma, State } from '@prisma/client';
-import { Lot } from './types/lot.prisma-types';
+import { Lot, LotWithSeller } from './types/lot.prisma-types';
 import LotUpdateDto from './dtos/lot-update.dto';
 import LotQueryDto from './dtos/lot-query.dto';
 import LotCreateDto from './dtos/lot-create.dto';
@@ -46,10 +46,13 @@ export class LotsService {
     return lot;
   }
 
-  async find(where: Prisma.LotWhereUniqueInput): Promise<Lot> {
+  async find(where: Prisma.LotWhereUniqueInput): Promise<LotWithSeller> {
     return this.prisma.lot.findUniqueOrThrow({
       where,
-      include: { categories: { select: { category: { select: { name: true } } } } },
+      include: {
+        categories: { select: { category: { select: { name: true } } } },
+        seller: { select: { id: true, username: true, email: true, avatar: true } },
+      },
     });
   }
 
@@ -139,7 +142,10 @@ export class LotsService {
       orderBy: { [dto.orderBy]: dto.sortOrder },
       take: dto.take,
       skip: dto.skip,
-      include: { categories: { select: { category: { select: { name: true } } } } },
+      include: {
+        categories: { select: { category: { select: { name: true } } } },
+        seller: { select: { id: true, username: true, email: true, avatar: true } },
+      },
     });
   }
 
@@ -162,7 +168,10 @@ export class LotsService {
       orderBy: { [dto.orderBy]: dto.sortOrder },
       skip: dto.skip,
       take: dto.take,
-      include: { categories: { select: { category: { select: { name: true } } } } },
+      include: {
+        categories: { select: { category: { select: { name: true } } } },
+        seller: { select: { id: true, username: true, email: true, avatar: true } },
+      },
     });
   }
 
