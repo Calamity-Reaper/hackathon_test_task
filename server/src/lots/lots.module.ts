@@ -2,10 +2,10 @@ import { Module } from '@nestjs/common';
 import { LotsService } from './lots.service';
 import { LotsController } from './lots.controller';
 import { PrismaModule } from '../prisma/prisma.module';
-import { CategoriesModule } from '../categories/categories.module';
+import { FilesModule } from '../files/files.module';
 
 @Module({
-  imports: [PrismaModule, CategoriesModule],
+  imports: [PrismaModule, FilesModule],
   providers: [LotsService],
   controllers: [LotsController],
 })

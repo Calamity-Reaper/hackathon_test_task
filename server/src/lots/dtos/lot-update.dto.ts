@@ -1,6 +1,7 @@
 import { Prisma, State } from '@prisma/client';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { IsDateString, IsEnum, IsOptional, IsPositive, Length } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 export default class LotUpdateDto implements Omit<Prisma.LotUpdateInput, 'categories'> {
   @ApiPropertyOptional({ minLength: 1, maxLength: 255 })
@@ -15,6 +16,7 @@ export default class LotUpdateDto implements Omit<Prisma.LotUpdateInput, 'catego
 
   @ApiPropertyOptional()
   @IsOptional()
+  @Transform(({ value }) => value.split(','))
   @Length(1, 255, { each: true })
   categories?: string[];
 

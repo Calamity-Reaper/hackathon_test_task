@@ -12,6 +12,8 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Request } from 'express';
@@ -49,6 +51,7 @@ export class UsersController {
     return new UserDto(await this.usersService.find({ id: req.user.id }, false));
   }
 
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Patch('me')
   async updateMe(@Req() req: Request, @Body() dto: UserUpdateDto) {
     if (!req.user?.id) {
