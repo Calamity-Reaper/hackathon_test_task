@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -46,32 +47,35 @@ export class CategoriesController {
   }
 
   @ApiResponse({ status: 200, type: CategoryDto })
-  @Get(':name')
-  async get(@Param('name') name: string): Promise<CategoryDto> {
-    return this.categoriesService.find(name);
+  @Get(':id')
+  async get(@Param('id', new ParseIntPipe()) id: number): Promise<CategoryDto> {
+    return this.categoriesService.find(id);
   }
 
   @ApiOperation({ description: 'admin' })
   @Roles(Role.Admin)
   @UseGuards(AccessGuard, RolesGuard)
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
-  @Patch(':name')
-  async update(@Param('name') name: string, @Body() dto: CategoryUpdateDto) {
-    await this.categoriesService.update(name, dto);
+  @Patch(':id')
+  async update(@Param('id', new ParseIntPipe()) id: number, @Body() dto: CategoryUpdateDto) {
+    await this.categoriesService.update(id, dto);
   }
 
   @ApiOperation({ description: 'admin' })
   @Roles(Role.Admin)
   @UseGuards(AccessGuard, RolesGuard)
-  @Delete(':name')
-  async delete(@Param('name') name: string) {
-    await this.categoriesService.delete(name);
+  @Delete(':id')
+  async delete(@Param('id', new ParseIntPipe()) id: number) {
+    await this.categoriesService.delete(id);
   }
 
   @ApiResponse({ status: 200, type: [LotDto] })
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
-  @Get(':name/lots')
-  async getLots(@Param('name') name: string, @Query() dto: LotQueryDto): Promise<LotDto[]> {
-    return this.categoriesService.findLots(name);
+  @Get(':id/lots')
+  async getLots(
+    @Param('id', new ParseIntPipe()) id: number,
+    @Query() dto: LotQueryDto,
+  ): Promise<LotDto[]> {
+    return this.categoriesService.findLots(id);
   }
 }

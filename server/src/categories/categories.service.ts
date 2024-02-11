@@ -15,21 +15,21 @@ export class CategoriesService {
     return this.prisma.category.findMany({ orderBy: { name: 'asc' } });
   }
 
-  async find(name: string) {
-    return this.prisma.category.findUniqueOrThrow({ where: { name } });
+  async find(id: number) {
+    return this.prisma.category.findUniqueOrThrow({ where: { id } });
   }
 
-  async update(name: string, data: Prisma.RoleUpdateInput) {
-    return this.prisma.category.update({ where: { name }, data });
+  async update(id: number, data: Prisma.RoleUpdateInput) {
+    return this.prisma.category.update({ where: { id }, data });
   }
 
-  async delete(name: string) {
-    return this.prisma.category.delete({ where: { name } });
+  async delete(id: number) {
+    return this.prisma.category.delete({ where: { id } });
   }
 
-  async findLots(name: string) {
+  async findLots(id: number) {
     const category = await this.prisma.category.findUniqueOrThrow({
-      where: { name },
+      where: { id },
       include: {
         lots: {
           include: {
