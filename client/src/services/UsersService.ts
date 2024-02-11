@@ -3,6 +3,9 @@ import type { IPatchData, IUser } from '@/models/IUser'
 import $api from '@/http'
 
 export default class UsersService {
+  static async getUser(id: string): Promise<AxiosResponse<IUser>> {
+    return $api.get<IUser>(`/users/${id}`)
+  }
   static async getMe(): Promise<AxiosResponse<IUser>> {
     return $api.get<IUser>('/users/me')
   }

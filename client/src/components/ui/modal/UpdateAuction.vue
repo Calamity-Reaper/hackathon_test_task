@@ -7,24 +7,24 @@ import VButton from '@/components/ui/VButton.vue'
 import { ref } from 'vue'
 import { array, number, object, string, ValidationError } from 'yup'
 import { useAuctionsStore } from '@/stores/auctions'
-import type { IAuctionCreate } from '@/models/IAuctionCreate'
 import type { ICategory } from '@/models/ICategorie'
 import { useRouter } from 'vue-router'
+import type { IAuctionPatch } from '@/models/IAuctionPatch'
 
 const auctionDataSchema = object({
-  name: string().required().min(10),
-  description: string().required().min(255),
-  startBid: number().required().positive().min(100),
-  minPitch: number().required().positive().min(10),
+  name: string().min(10),
+  description: string().min(255),
+  startBid: number().positive().min(100),
+  minPitch: number().positive().min(10),
   categories: array(),
-  closesAt: string().required()
+  closesAt: string()
 })
 
 const auctionsStore = useAuctionsStore()
 
 const router = useRouter()
 
-const auctionData = ref<IAuctionCreate>({
+const auctionData = ref<IAuctionPatch>({
   name: '',
   description: '',
   startBid: '',
@@ -42,6 +42,10 @@ function selectFile(event: Event) {
 }
 
 async function submitForm(event: Event) {
+  for (const key in auctionData.value) {
+    //Set empty fields to undefined for ignoring changes
+    auctionData.value[key] = auctionData.value[key] === '' ? undefined : auctionData.value[key]
+  }
   try {
     auctionDataSchema.validateSync(auctionData.value)
     auctionData.value.categories = (auctionData.value.categories as ICategory[]).map((el) => {
@@ -53,10 +57,7 @@ async function submitForm(event: Event) {
         formData.append('imgs', selectedFiles.value[i])
       }
       formData.append('data', JSON.stringify(auctionData.value))
-      const id = await auctionsStore.createAuction(formData)
-      if (id) {
-        router.push({ name: 'auction', params: { id } })
-      }
+      await auctionsStore.patchAuction(props.lotId, formData)
       emit('close')
     }
     ;(event.target as HTMLFormElement).reset()
@@ -80,6 +81,9 @@ function decline() {
   emit('close')
 }
 
+const props = defineProps<{
+  lotId: string
+}>()
 const emit = defineEmits(['close'])
 </script>
 
@@ -99,7 +103,6 @@ const emit = defineEmits(['close'])
         </div>
         <VInput
           name="images"
-          required
           id="fileInput"
           @change="selectFile"
           type="file"
@@ -109,28 +112,18 @@ const emit = defineEmits(['close'])
       </div>
       <div class="flex flex-col gap-2 md:mb-0 md:grow md:basis-0">
         <div class="mb-4 flex flex-col gap-2 md:mb-0 md:grow md:basis-0">
-          <VInput required v-model="auctionData.name" placeholder="Title" />
-          <VTextarea required v-model="auctionData.description" placeholder="Description" />
+          <VInput v-model="auctionData.name" placeholder="Title" />
+          <VTextarea v-model="auctionData.description" placeholder="Description" />
           <div class="grid grid-cols-1 gap-2 lg:grid-cols-2">
-            <VInput
-              required
-              v-model="auctionData.startBid"
-              type="number"
-              placeholder="Start price"
-            />
-            <VInput
-              required
-              v-model="auctionData.minPitch"
-              type="number"
-              placeholder="Minimum pitch"
-            />
+            <VInput v-model="auctionData.startBid" type="number" placeholder="Start price" />
+            <VInput v-model="auctionData.minPitch" type="number" placeholder="Minimum pitch" />
           </div>
           <VSelect
             v-model="auctionData.categories"
             placeholder="Categories"
             :options="auctionsStore.categories"
           />
-          <VInput required v-model="auctionData.closesAt" type="date" placeholder="Minimum pitch" />
+          <VInput v-model="auctionData.closesAt" type="date" placeholder="Minimum pitch" />
         </div>
         <div class="flex gap-4">
           <VButton type="reset" color="danger" text="xl" @click="decline"> Decline </VButton>

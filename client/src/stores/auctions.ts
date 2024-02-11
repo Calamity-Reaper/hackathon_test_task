@@ -18,11 +18,28 @@ export const useAuctionsStore = defineStore('auctions', {
       categories: []
     }
   },
+  getters: {
+    getCurrentAuction(state): IAuction {
+      return state.currentAuction
+    }
+  },
   actions: {
-    async createAuction(data: FormData) {
+    async createAuction(data: FormData): Promise<string | undefined> {
       try {
         const auctionData = await AuctionService.create(data)
-        this.currentAuction = auctionData.data
+        return auctionData.data.id
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          throw new Error(e.response?.data.message)
+        } else {
+          console.log(e)
+        }
+      }
+    },
+    async patchAuction(id: string, data: FormData) {
+      try {
+        const auctionData = (await AuctionService.patchLot(id, data)).data
+        this.currentAuction = auctionData
       } catch (e) {
         if (e instanceof AxiosError) {
           throw new Error(e.response?.data.message)
@@ -35,6 +52,30 @@ export const useAuctionsStore = defineStore('auctions', {
       try {
         const categories = await CategoriesService.getAll()
         this.categories = [...categories.data]
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          throw new Error(e.response?.data.message)
+        } else {
+          console.log(e)
+        }
+      }
+    },
+    async getById(id: string) {
+      try {
+        const auctionData = await AuctionService.getById(id)
+        this.currentAuction = auctionData.data
+      } catch (e) {
+        if (e instanceof AxiosError) {
+          throw new Error(e.response?.data.message)
+        } else {
+          console.log(e)
+        }
+      }
+    },
+    async getAllLots() {
+      try {
+        const auctionsData = await AuctionService.getAll()
+        this.auctions = auctionsData.data
       } catch (e) {
         if (e instanceof AxiosError) {
           throw new Error(e.response?.data.message)

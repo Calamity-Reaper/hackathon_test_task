@@ -2,6 +2,7 @@
 interface Props {
   color: 'primary' | 'secondary' | 'danger'
   text: 'sm' | 'xl'
+  rounded?: 'none' | 'rounded'
 }
 
 const buttonColors = {
@@ -14,13 +15,20 @@ const buttonTextSize = {
   xl: 'text-xl'
 }
 
-const props = defineProps<Props>()
+const buttonRounded = {
+  none: 'rounded-none',
+  rounded: 'rounded-xl'
+}
+
+const props = withDefaults(defineProps<Props>(), {
+  rounded: 'rounded'
+})
 </script>
 
 <template>
   <button
-    class="w-full rounded-xl py-1.5 transition-all duration-200 hover:brightness-90"
-    :class="[buttonColors[color], buttonTextSize[text]]"
+    class="h-fit w-full py-1.5 transition-all duration-200 hover:brightness-90"
+    :class="[buttonColors[color], buttonTextSize[text], buttonRounded[rounded]]"
   >
     <slot></slot>
   </button>

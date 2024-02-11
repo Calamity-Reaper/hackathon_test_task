@@ -16,6 +16,7 @@
     "axios": "^1.6.7",
     "pinia": "^2.1.7",
     "prettier-plugin-tailwindcss": "^0.5.11",
+    "primevue": "^3.48.1",
     "socket.io-client": "^4.7.4",
     "vue": "^3.4.15",
     "vue-router": "^4.2.5",

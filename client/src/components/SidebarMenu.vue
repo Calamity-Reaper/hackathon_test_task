@@ -4,11 +4,17 @@ import BlurBackdropModal from '@/components/ui/modal/BlurBackdropModal.vue'
 import VCloseMenuIcon from '@/components/ui/VCloseMenuIcon.vue'
 import { useUserStore } from '@/stores/user'
 import { API_STATIC } from '@/http'
+import { useRouter } from 'vue-router'
 
 const userStore = useUserStore()
+const router = useRouter()
 
 const emit = defineEmits(['close', 'showAuth', 'showPersonalInfo', 'showCreateAuction'])
 
+function goToAuctions() {
+  router.push('/')
+  emit('close')
+}
 async function logout() {
   await userStore.logout()
   emit('close')
@@ -28,8 +34,7 @@ async function logout() {
             alt="Avatar"
           />
           <p class="text-2xl font-bold">@{{ userStore.user?.username }}</p>
-          <VButton color="secondary" text="xl"> Personal Area </VButton>
-          <VButton color="secondary" text="xl"> Auctions </VButton>
+          <VButton color="secondary" text="xl" @click="goToAuctions"> Auctions </VButton>
           <VButton color="secondary" text="xl" @click="emit('showPersonalInfo')">
             Edit profile
           </VButton>
@@ -42,7 +47,7 @@ async function logout() {
       <template v-else>
         <div class="flex flex-col gap-2">
           <VButton color="secondary" text="xl" @click="emit('showAuth')"> Sign in </VButton>
-          <VButton color="secondary" text="xl"> Auctions </VButton>
+          <VButton color="secondary" text="xl" @click="goToAuctions"> Auctions </VButton>
         </div>
         <div class="flex flex-col gap-2">
           <VButton color="primary" text="xl" @click="emit('showCreateAuction')"> Create + </VButton>

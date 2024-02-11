@@ -9,4 +9,10 @@ export interface IAuction {
   state: string
   images: string[]
   categories: string[]
+  closesAt: string
+  participantsCount: number
+  seller: {
+    username: string
+    avatar: string | null
+  }
 }
