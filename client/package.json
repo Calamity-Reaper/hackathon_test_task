@@ -16,9 +16,12 @@
     "axios": "^1.6.7",
     "pinia": "^2.1.7",
     "prettier-plugin-tailwindcss": "^0.5.11",
+    "primevue": "^3.48.1",
     "socket.io-client": "^4.7.4",
     "vue": "^3.4.15",
-    "vue-router": "^4.2.5"
+    "vue-router": "^4.2.5",
+    "vue-select": "^4.0.0-beta.6",
+    "yup": "^1.3.3"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.3.3",

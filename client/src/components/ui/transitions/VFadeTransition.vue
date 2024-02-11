@@ -1,19 +1,19 @@
 <script setup lang="ts"></script>
 
 <template>
-  <transition>
+  <transition name="fade">
     <slot />
   </transition>
 </template>
 
 <style scoped>
-.v-enter-active,
-.v-leave-active {
+.fade-enter-active,
+.fade-leave-active {
   transition: opacity 0.5s ease;
 }
 
-.v-enter-from,
-.v-leave-to {
+.fade-enter-from,
+.fade-leave-to {
   opacity: 0;
 }
 </style>

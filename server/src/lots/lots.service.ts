@@ -188,8 +188,9 @@ export class LotsService {
     return lot.bids;
   }
 
-  @Cron('* * 1 * * *')
+  @Cron('45 * * * * *')
   private updateStates() {
+    console.log('gijdfshgdfgid')
     this.prisma.lot.updateMany({
       where: { state: State.OPEN, closesAt: { lte: new Date() } },
       data: { state: State.CLOSED },

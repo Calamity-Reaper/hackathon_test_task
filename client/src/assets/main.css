@@ -1,18 +1,20 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@layer reset, primevue;
 
-@layer components {
-  .gutter-stable {
-    scrollbar-gutter: stable;
-  }
+/* Reset CSS */
+@layer reset {
+    button,
+    input {
+        /* CSS to Reset */
+    }
 }
 
 * {
-  font-family: 'Montserrat', sans-serif;
+    font-family: 'Montserrat', sans-serif;
 }
 
 body {
-  background-color: #eff1ef;
-  /*overflow: hidden;*/
+    background-color: #eff1ef;
 }

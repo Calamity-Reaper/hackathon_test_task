@@ -5,7 +5,8 @@ export default {
     extend: {
       colors: {
         'green-primary': '#DAFF72',
-        'gray-primary': '#EFF1EF',
+        'green-primary-dark': '#84A031',
+        'gray-primary': '#EFF1EF'
       },
       translate: {
         '3/2': '150%'
