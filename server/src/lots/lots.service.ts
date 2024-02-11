@@ -16,7 +16,7 @@ export class LotsService {
 
   async create(userId: string, dto: LotCreateDto, files: Express.Multer.File[]): Promise<Lot> {
     const categories = dto.categories
-      ? { create: dto.categories.map((c) => ({ category: { connect: { name: c } } })) }
+      ? { create: dto.categories.map((id) => ({ category: { connect: { id } } })) }
       : { create: { category: { connect: { name: 'other' } } } };
 
     const lot = await this.prisma.lot.create({
@@ -32,14 +32,14 @@ export class LotsService {
       include: { categories: { select: { category: { select: { name: true } } } } },
     });
 
-    const images: string[] = [];
     for (const file of files) {
-      images.push(await this.filesService.save(file));
+      lot.images.push(await this.filesService.save(file));
     }
 
-    await this.prisma.lot.update({ where: { id: lot.id }, data: { images } });
-
-    lot.images = images;
+    await this.prisma.lot.update({
+      where: { id: lot.id },
+      data: { images: files.length ? lot.images : undefined },
+    });
 
     return lot;
   }
@@ -67,24 +67,20 @@ export class LotsService {
     let categories;
     if (dto.categories) {
       categories = {
-        create: dto.categories.map((c) => ({ category: { connect: { name: c } } })),
+        create: dto.categories.map((id) => ({ category: { connect: { id } } })),
       };
 
       await this.prisma.lotCategory.deleteMany({ where: { lotId: lot.id } });
     }
 
-    for (const file of lot.images) {
-      await this.filesService.delete(file);
-    }
-    const images: string[] = [];
-    for (const file of files) {
-      images.push(await this.filesService.save(file));
-    }
-
-    if (dto.categories) {
-      await this.prisma.lot.update({ where: { id }, data: { ...dto, categories } });
-    } else {
-      await this.prisma.lot.update({ where: { id }, data: { ...dto, categories: undefined } });
+    if (files.length) {
+      for (const file of lot.images) {
+        await this.filesService.delete(file);
+      }
+      lot.images = [];
+      for (const file of files) {
+        lot.images.push(await this.filesService.save(file));
+      }
     }
 
     lot = await this.prisma.lot.update({
@@ -96,7 +92,7 @@ export class LotsService {
         minPitch: dto.minPitch,
         closesAt: dto.closesAt ? new Date(dto.closesAt) : undefined,
         categories,
-        images,
+        images: files.length ? lot.images : undefined,
       },
       include: { categories: { select: { category: { select: { name: true } } } } },
     });

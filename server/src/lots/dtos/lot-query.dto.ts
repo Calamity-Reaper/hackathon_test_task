@@ -1,6 +1,6 @@
 import QueryDto from '../../common/dtos/query.dto';
 import { Lot } from '@prisma/client';
-import { IsIn, IsOptional, Length } from 'class-validator';
+import { IsIn, IsOptional, IsPositive, Length } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 
@@ -17,13 +17,9 @@ export default class LotQueryDto extends QueryDto {
   @IsIn(orderBy)
   orderBy: (typeof orderBy)[number];
 
-  @ApiPropertyOptional({
-    type: String,
-    example: 'other,tech',
-    description: 'comma-separated array',
-  })
+  @ApiPropertyOptional({ type: [Number], isArray: true })
   @IsOptional()
-  @Transform(({ value }) => value.split(','))
-  @Length(1, 255, { each: true })
-  categories?: string[];
+  @Transform(({ value }) => value.map(Number))
+  @IsPositive({ each: true })
+  categories?: number[];
 }

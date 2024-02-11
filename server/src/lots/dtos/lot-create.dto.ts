@@ -21,11 +21,11 @@ export default class LotCreateDto implements Omit<Prisma.LotCreateInput, 'seller
   @IsPositive()
   minPitch: number;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: [Number], isArray: true })
   @IsOptional()
-  @Transform(({ value }) => value.split(','))
-  @Length(1, 255, { each: true })
-  categories?: string[];
+  @Transform(({ value }) => value.map(Number))
+  @IsPositive({ each: true })
+  categories?: number[];
 
   @ApiProperty()
   @IsDateString()

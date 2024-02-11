@@ -14,11 +14,11 @@ export default class LotUpdateDto implements Omit<Prisma.LotUpdateInput, 'catego
   @Length(1, 5000)
   description?: string;
 
-  @ApiPropertyOptional()
+  @ApiPropertyOptional({ type: [Number], isArray: true })
   @IsOptional()
-  @Transform(({ value }) => value.split(','))
-  @Length(1, 255, { each: true })
-  categories?: string[];
+  @Transform(({ value }) => value.map(Number))
+  @IsPositive({ each: true })
+  categories?: number[];
 
   @ApiPropertyOptional({ minimum: 0, exclusiveMinimum: true })
   @IsOptional()

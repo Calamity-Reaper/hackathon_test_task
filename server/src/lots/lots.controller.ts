@@ -47,7 +47,7 @@ export class LotsController {
   })
   @ApiResponse({ status: 201, type: LotDto })
   @UseGuards(AccessGuard)
-  @UseInterceptors(FilesInterceptor('imgs'))
+  @UseInterceptors(FilesInterceptor('imgs', 10))
   @Post()
   async create(
     @Req() req: Request,
@@ -57,7 +57,7 @@ export class LotsController {
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: /image\/(jpeg|png)/gm })
         .addMaxSizeValidator({ maxSize: MbToB(5) })
-        .build(),
+        .build({ fileIsRequired: false }),
     )
     files: Express.Multer.File[],
   ): Promise<LotDto> {
@@ -108,7 +108,7 @@ export class LotsController {
     },
   })
   @UseGuards(AccessGuard)
-  @UseInterceptors(FilesInterceptor('imgs'))
+  @UseInterceptors(FilesInterceptor('imgs', 10))
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -126,7 +126,7 @@ export class LotsController {
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: /image\/(jpeg|png)/gm })
         .addMaxSizeValidator({ maxSize: MbToB(5) })
-        .build(),
+        .build({ fileIsRequired: false }),
     )
     files: Express.Multer.File[],
   ) {
