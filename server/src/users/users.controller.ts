@@ -101,6 +101,11 @@ export class UsersController {
     await this.usersService.deleteAvatar(req.user.id);
   }
 
+  @Get(':id')
+  async get(@Param('id') id: string): Promise<UserDto> {
+    return new UserDto(await this.usersService.find({ id }, false));
+  }
+
   @ApiOperation({ description: 'admin' })
   @Roles(Role.Admin)
   @UseGuards(RolesGuard)

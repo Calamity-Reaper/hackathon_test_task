@@ -1,6 +1,6 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { Prisma } from '@prisma/client';
+import { Prisma, State } from '@prisma/client';
 import { Lot } from './types/lot.prisma-types';
 import LotUpdateDto from './dtos/lot-update.dto';
 import LotQueryDto from './dtos/lot-query.dto';
@@ -84,6 +84,11 @@ export class LotsService {
       }
     }
 
+    let state = lot.state;
+    if (lot.closesAt.getTime() <= Date.now()) {
+      state = State.CLOSED;
+    }
+
     lot = await this.prisma.lot.update({
       where: { id },
       data: {
@@ -93,10 +98,24 @@ export class LotsService {
         minPitch: dto.minPitch,
         closesAt: dto.closesAt ? new Date(dto.closesAt) : undefined,
         categories,
+        state,
         images: files.length ? lot.images : undefined,
       },
       include: { categories: { select: { category: { select: { name: true } } } } },
     });
+
+    return lot;
+  }
+
+  async updateState(id: string) {
+    let lot = await this.prisma.lot.findUniqueOrThrow({ where: { id } });
+
+    let state = lot.state;
+    if (lot.closesAt.getTime() <= Date.now()) {
+      state = State.CLOSED;
+    }
+
+    lot = await this.prisma.lot.update({ where: { id }, data: { state } });
 
     return lot;
   }
