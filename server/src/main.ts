@@ -1,7 +1,6 @@
 import { HttpAdapterHost, NestApplication, NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { Logger } from '@nestjs/common';
-import helmet from 'helmet';
 import * as cookieParser from 'cookie-parser';
 import { AppConfigService } from './app-config/app-config.service';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
@@ -14,7 +13,6 @@ const start = async () => {
   const config = app.get(AppConfigService);
 
   app.enableCors({ credentials: true, origin: config.CLIENT_URL });
-  app.use(helmet());
   app.use(cookieParser());
   app.useGlobalFilters(new PrismaClientExceptionFilter(app.get(HttpAdapterHost).httpAdapter));
   app.useStaticAssets(config.SERVE_STATIC_PATH, { prefix: config.SERVE_STATIC_PREFIX });
