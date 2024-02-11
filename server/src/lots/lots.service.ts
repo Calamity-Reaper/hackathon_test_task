@@ -147,7 +147,15 @@ export class LotsService {
     });
   }
 
-  async findParticipated(id: string, dto: LotQueryDto) {}
+  async findParticipated(id: string, dto: LotQueryDto) {
+    return this.prisma.lot.findMany({
+      where: { bids: { every: { userId: id } } },
+      orderBy: { [dto.orderBy]: dto.sortOrder },
+      skip: dto.skip,
+      take: dto.take,
+      include: { categories: { select: { category: { select: { name: true } } } } },
+    });
+  }
 
   async findBids(id: string, dto: BidQueryDto) {
     const lot = await this.prisma.lot.findUniqueOrThrow({

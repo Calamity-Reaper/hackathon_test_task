@@ -56,6 +56,6 @@ export class RolesController {
     @Param('id', new ParseIntPipe()) id: number,
     @Query() dto: UserQueryDto,
   ): Promise<UserDto[]> {
-    return this.rolesService.findUsers(id);
+    return this.rolesService.findUsers(id, dto);
   }
 }

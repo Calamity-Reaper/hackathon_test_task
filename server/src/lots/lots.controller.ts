@@ -95,8 +95,12 @@ export class LotsController {
   @UseGuards(AccessGuard)
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Get('my/participated')
-  async getParticipated(@Query() dto: LotQueryDto): Promise<LotDto[]> {
-    return [];
+  async getParticipated(@Req() req: Request, @Query() dto: LotQueryDto): Promise<LotDto[]> {
+    if (!req.user?.id) {
+      throw new InternalServerErrorException();
+    }
+
+    return (await this.lotsService.findParticipated(req.user.id, dto)).map((l) => new LotDto(l));
   }
 
   @ApiResponse({ status: 200, type: LotDto })
