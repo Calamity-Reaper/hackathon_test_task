@@ -11,6 +11,7 @@ import { FilesModule } from './files/files.module';
 import { LotsModule } from './lots/lots.module';
 import { BidsModule } from './bids/bids.module';
 import { CategoriesModule } from './categories/categories.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { CategoriesModule } from './categories/categories.module';
     }),
     AppConfigModule,
     PrismaModule,
+    ScheduleModule.forRoot(),
     AuthModule,
     UsersModule,
     TokensModule,
