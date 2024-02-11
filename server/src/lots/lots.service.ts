@@ -7,6 +7,7 @@ import LotQueryDto from './dtos/lot-query.dto';
 import LotCreateDto from './dtos/lot-create.dto';
 import { FilesService } from '../files/files.service';
 import BidQueryDto from '../bids/dtos/bid-query.dto';
+import { Cron } from '@nestjs/schedule';
 
 @Injectable()
 export class LotsService {
@@ -131,16 +132,6 @@ export class LotsService {
   }
 
   async findAll(dto: LotQueryDto) {
-    // const ids = await this.prisma.lotCategory.findMany({
-    //   where: { category: { name: { in: ["children's world", "author's"] } } },
-    // });
-    //
-    // console.log(ids, ids.length);
-    //
-    // const lots = await this.prisma.lot.findMany({ where: { id: { in: ids.map((i) => i.lotId) } } });
-    //
-    // console.log(lots, lots.length);
-
     return this.prisma.lot.findMany({
       where: {
         name: { contains: dto.name, mode: 'insensitive' },
@@ -189,5 +180,13 @@ export class LotsService {
     });
 
     return lot.bids;
+  }
+
+  @Cron('* * 1 * * *')
+  private updateStates() {
+    this.prisma.lot.updateMany({
+      where: { state: State.OPEN, closesAt: { lte: new Date() } },
+      data: { state: State.CLOSED },
+    });
   }
 }
