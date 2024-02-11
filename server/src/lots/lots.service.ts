@@ -3,26 +3,45 @@ import { PrismaService } from '../prisma/prisma.service';
 import { Prisma } from '@prisma/client';
 import { Lot } from './types/lot.prisma-types';
 import LotUpdateDto from './dtos/lot-update.dto';
-import { CategoriesService } from '../categories/categories.service';
 import LotQueryDto from './dtos/lot-query.dto';
+import LotCreateDto from './dtos/lot-create.dto';
+import { FilesService } from '../files/files.service';
 
 @Injectable()
 export class LotsService {
   constructor(
     private prisma: PrismaService,
-    private categoriesService: CategoriesService,
+    private filesService: FilesService,
   ) {}
 
-  async create(userId: string, data: Prisma.LotCreateWithoutSellerInput): Promise<Lot> {
-    return this.prisma.lot.create({
+  async create(userId: string, dto: LotCreateDto, files: Express.Multer.File[]): Promise<Lot> {
+    const categories = dto.categories
+      ? { create: dto.categories.map((c) => ({ category: { connect: { name: c } } })) }
+      : { create: { category: { connect: { name: 'other' } } } };
+
+    const lot = await this.prisma.lot.create({
       data: {
-        seller: { connect: { id: userId } },
-        ...data,
-        closesAt: new Date(data.closesAt),
-        categories: { create: { category: { connect: { name: 'other' } } } },
+        name: dto.name,
+        description: dto.description,
+        sellerId: userId,
+        startBid: dto.startBid,
+        minPitch: dto.minPitch,
+        closesAt: new Date(dto.closesAt),
+        categories,
       },
       include: { categories: { select: { category: { select: { name: true } } } } },
     });
+
+    const images: string[] = [];
+    for (const file of files) {
+      images.push(await this.filesService.save(file));
+    }
+
+    await this.prisma.lot.update({ where: { id: lot.id }, data: { images } });
+
+    lot.images = images;
+
+    return lot;
   }
 
   async find(where: Prisma.LotWhereUniqueInput): Promise<Lot> {
@@ -32,26 +51,57 @@ export class LotsService {
     });
   }
 
-  async update(id: string, requesterId: string, dto: LotUpdateDto, force?: boolean) {
-    const lot = await this.prisma.lot.findUniqueOrThrow({ where: { id } });
+  async update(
+    id: string,
+    requesterId: string,
+    dto: LotUpdateDto,
+    files: Express.Multer.File[],
+    force?: boolean,
+  ) {
+    let lot = await this.prisma.lot.findUniqueOrThrow({ where: { id } });
 
     if (lot.sellerId !== requesterId && !force) {
       throw new ForbiddenException();
     }
 
-    console.log(lot);
-
+    let categories;
     if (dto.categories) {
-      await this.prisma.lotCategory.deleteMany({ where: { lotId: lot.id } });
-
-      const categories = {
+      categories = {
         create: dto.categories.map((c) => ({ category: { connect: { name: c } } })),
       };
 
+      await this.prisma.lotCategory.deleteMany({ where: { lotId: lot.id } });
+    }
+
+    for (const file of lot.images) {
+      await this.filesService.delete(file);
+    }
+    const images: string[] = [];
+    for (const file of files) {
+      images.push(await this.filesService.save(file));
+    }
+
+    if (dto.categories) {
       await this.prisma.lot.update({ where: { id }, data: { ...dto, categories } });
     } else {
       await this.prisma.lot.update({ where: { id }, data: { ...dto, categories: undefined } });
     }
+
+    lot = await this.prisma.lot.update({
+      where: { id },
+      data: {
+        name: dto.name,
+        description: dto.description,
+        startBid: dto.startBid,
+        minPitch: dto.minPitch,
+        closesAt: dto.closesAt ? new Date(dto.closesAt) : undefined,
+        categories,
+        images,
+      },
+      include: { categories: { select: { category: { select: { name: true } } } } },
+    });
+
+    return lot;
   }
 
   async delete(id: string, requesterId: string, force?: boolean) {
