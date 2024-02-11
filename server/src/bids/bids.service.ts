@@ -11,7 +11,7 @@ export class BidsService {
   ) {}
 
   async create(userId: string, dto: BidCreateDto) {
-    const lot = await this.lotsService.find({ id: dto.lotId });
+    const lot = await this.lotsService.updateState(dto.lotId);
 
     if (lot.state !== 'OPEN') {
       throw new BadRequestException('lot must be open');
