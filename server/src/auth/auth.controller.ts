@@ -7,6 +7,8 @@ import {
   Req,
   Res,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import SignupRequestDto from './dtos/signup-request.dto';
 import { Request, Response } from 'express';
@@ -28,6 +30,7 @@ export class AuthController {
   ) {}
 
   @ApiResponse({ status: 201, type: AuthResponseDto })
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Post('signup')
   async signup(
     @Body() dto: SignupRequestDto,
@@ -45,6 +48,7 @@ export class AuthController {
   }
 
   @ApiResponse({ status: 201, type: AuthResponseDto })
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Post('login')
   async login(
     @Body() dto: LoginRequestDto,

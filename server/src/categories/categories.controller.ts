@@ -8,6 +8,8 @@ import {
   Post,
   Query,
   UseGuards,
+  UsePipes,
+  ValidationPipe,
 } from '@nestjs/common';
 import LotQueryDto from '../lots/dtos/lot-query.dto';
 import { ApiBearerAuth, ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
@@ -31,6 +33,7 @@ export class CategoriesController {
   @ApiResponse({ status: 201, type: CategoryDto })
   @Roles(Role.Admin)
   @UseGuards(AccessGuard, RolesGuard)
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Post()
   async create(@Body() dto: CategoryCreateDto): Promise<CategoryDto> {
     return this.categoriesService.create(dto);
@@ -51,6 +54,7 @@ export class CategoriesController {
   @ApiOperation({ description: 'admin' })
   @Roles(Role.Admin)
   @UseGuards(AccessGuard, RolesGuard)
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Patch(':name')
   async update(@Param('name') name: string, @Body() dto: CategoryUpdateDto) {
     await this.categoriesService.update(name, dto);
@@ -64,7 +68,8 @@ export class CategoriesController {
     await this.categoriesService.delete(name);
   }
 
-  @ApiResponse({ status: 200, type: [CategoryDto] })
+  @ApiResponse({ status: 200, type: [LotDto] })
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Get(':name/lots')
   async getLots(@Param('name') name: string, @Query() dto: LotQueryDto): Promise<LotDto[]> {
     return this.categoriesService.findLots(name);

@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Patch, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Query,
+  UseGuards,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { RolesService } from './roles.service';
 import RoleUpdateDto from './dtos/role-update.dto';
 import AccessGuard from '../auth/guards/access.guard';
@@ -32,12 +42,14 @@ export class RolesController {
   @ApiOperation({ description: 'admin' })
   @Roles(Role.Admin)
   @UseGuards(RolesGuard)
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Patch(':name')
   async update(@Param('name') name: string, @Body() dto: RoleUpdateDto) {
     await this.rolesService.update(name, dto);
   }
 
   @ApiResponse({ status: 200, type: [UserDto] })
+  @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Get(':name/users')
   async getUsers(@Param('name') name: string, @Query() dto: UserQueryDto): Promise<UserDto[]> {
     return this.rolesService.findUsers(name);
