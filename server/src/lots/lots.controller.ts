@@ -28,6 +28,10 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import ParseJsonPipe from '../common/pipes/parse-json.pipe';
 import LotCreateDto from './dtos/lot-create.dto';
 import { MbToB } from '../common/utils/mb-to-b';
+import BidQueryDto from '../bids/dtos/bid-query.dto';
+import BidDto from '../bids/dtos/bid.dto';
+import UserQueryDto from '../users/dtos/user-query.dto';
+import UserBidderDto from '../users/dtos/user-bidder.dto';
 
 @ApiTags('lots')
 @ApiBearerAuth()
@@ -149,5 +153,15 @@ export class LotsController {
     }
 
     await this.lotsService.delete(id, req.user.id, req.user.roles.includes(Role.Admin));
+  }
+
+  @Get(':id/bids')
+  async getBids(@Param('id') id: string, @Query() dto: BidQueryDto): Promise<BidDto[]> {
+    return this.lotsService.findBids(id, dto);
+  }
+
+  @Get(':id/users')
+  async getUser(@Param('id') id: string, @Query() dto: UserQueryDto): Promise<UserBidderDto[]> {
+    return this.lotsService.findUsers(id, dto);
   }
 }
