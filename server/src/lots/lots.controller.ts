@@ -28,6 +28,10 @@ import { FilesInterceptor } from '@nestjs/platform-express';
 import ParseJsonPipe from '../common/pipes/parse-json.pipe';
 import LotCreateDto from './dtos/lot-create.dto';
 import { MbToB } from '../common/utils/mb-to-b';
+import BidQueryDto from '../bids/dtos/bid-query.dto';
+import BidDto from '../bids/dtos/bid.dto';
+import UserQueryDto from '../users/dtos/user-query.dto';
+import UserBidderDto from '../users/dtos/user-bidder.dto';
 
 @ApiTags('lots')
 @ApiBearerAuth()
@@ -47,7 +51,7 @@ export class LotsController {
   })
   @ApiResponse({ status: 201, type: LotDto })
   @UseGuards(AccessGuard)
-  @UseInterceptors(FilesInterceptor('imgs'))
+  @UseInterceptors(FilesInterceptor('imgs', 10))
   @Post()
   async create(
     @Req() req: Request,
@@ -57,7 +61,7 @@ export class LotsController {
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: /image\/(jpeg|png)/gm })
         .addMaxSizeValidator({ maxSize: MbToB(5) })
-        .build(),
+        .build({ fileIsRequired: false }),
     )
     files: Express.Multer.File[],
   ): Promise<LotDto> {
@@ -72,15 +76,19 @@ export class LotsController {
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Get()
   async getAll(@Query() dto: LotQueryDto): Promise<LotDto[]> {
-    return [];
+    return (await this.lotsService.findAll(dto)).map((l) => new LotDto(l));
   }
 
   @ApiResponse({ status: 200, type: [LotDto] })
   @UseGuards(AccessGuard)
   @UsePipes(new ValidationPipe({ transform: true, whitelist: true }))
   @Get('my/created')
-  async getCreated(@Query() dto: LotQueryDto): Promise<LotDto[]> {
-    return [];
+  async getCreated(@Req() req: Request, @Query() dto: LotQueryDto): Promise<LotDto[]> {
+    if (!req.user?.id) {
+      throw new InternalServerErrorException();
+    }
+
+    return (await this.lotsService.findCreated(req.user.id, dto)).map((l) => new LotDto(l));
   }
 
   @ApiResponse({ status: 200, type: [LotDto] })
@@ -108,7 +116,7 @@ export class LotsController {
     },
   })
   @UseGuards(AccessGuard)
-  @UseInterceptors(FilesInterceptor('imgs'))
+  @UseInterceptors(FilesInterceptor('imgs', 10))
   @Patch(':id')
   async update(
     @Param('id') id: string,
@@ -126,7 +134,7 @@ export class LotsController {
       new ParseFilePipeBuilder()
         .addFileTypeValidator({ fileType: /image\/(jpeg|png)/gm })
         .addMaxSizeValidator({ maxSize: MbToB(5) })
-        .build(),
+        .build({ fileIsRequired: false }),
     )
     files: Express.Multer.File[],
   ) {
@@ -145,5 +153,15 @@ export class LotsController {
     }
 
     await this.lotsService.delete(id, req.user.id, req.user.roles.includes(Role.Admin));
+  }
+
+  @Get(':id/bids')
+  async getBids(@Param('id') id: string, @Query() dto: BidQueryDto): Promise<BidDto[]> {
+    return this.lotsService.findBids(id, dto);
+  }
+
+  @Get(':id/users')
+  async getUser(@Param('id') id: string, @Query() dto: UserQueryDto): Promise<UserBidderDto[]> {
+    return this.lotsService.findUsers(id, dto);
   }
 }

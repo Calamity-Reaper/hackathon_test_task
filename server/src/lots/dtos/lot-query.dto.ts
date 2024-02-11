@@ -1,10 +1,17 @@
 import QueryDto from '../../common/dtos/query.dto';
 import { Lot } from '@prisma/client';
-import { IsIn, IsOptional, Length } from 'class-validator';
+import { IsIn, IsOptional, IsPositive, Length, Min } from 'class-validator';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 
-const orderBy: (keyof Lot)[] = ['name', 'startBid', 'closesAt', 'createdAt', 'updatedAt'] as const;
+const orderBy: (keyof Lot)[] = [
+  'name',
+  'participantsCount',
+  'startBid',
+  'closesAt',
+  'createdAt',
+  'updatedAt',
+] as const;
 
 export default class LotQueryDto extends QueryDto {
   @IsOptional()
@@ -17,13 +24,19 @@ export default class LotQueryDto extends QueryDto {
   @IsIn(orderBy)
   orderBy: (typeof orderBy)[number];
 
-  @ApiPropertyOptional({
-    type: String,
-    example: 'other,tech',
-    description: 'comma-separated array',
-  })
+  @ApiPropertyOptional({ type: [Number], isArray: true })
   @IsOptional()
-  @Transform(({ value }) => value.split(','))
-  @Length(1, 255, { each: true })
-  categories?: string[];
+  @Transform(({ value }) => value.map(Number))
+  @IsPositive({ each: true })
+  categories?: number[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Min(0)
+  take?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @Min(0)
+  skip?: number;
 }

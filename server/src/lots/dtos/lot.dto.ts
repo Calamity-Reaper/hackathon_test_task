@@ -34,6 +34,9 @@ export default class LotDto implements Omit<Lot, 'categories'> {
   categories: string[];
 
   @ApiProperty()
+  participantsCount: number;
+
+  @ApiProperty()
   closesAt: Date;
 
   @ApiProperty()
@@ -53,6 +56,7 @@ export default class LotDto implements Omit<Lot, 'categories'> {
     this.state = lot.state;
     this.images = lot.images;
     this.categories = lot.categories.map((lt) => lt.category.name);
+    this.participantsCount = lot.participantsCount;
     this.closesAt = lot.closesAt;
     this.createdAt = lot.createdAt;
     this.updatedAt = lot.updatedAt;
