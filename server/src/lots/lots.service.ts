@@ -180,7 +180,7 @@ export class LotsService {
       where: { id },
       include: {
         bids: {
-          select: { user: { select: { id: true, username: true, email: true, avatar: true } } },
+          include: { user: { select: { id: true, username: true, email: true, avatar: true } } },
           orderBy: { [dto.orderBy]: dto.sortOrder },
           take: dto.take,
           skip: dto.skip,

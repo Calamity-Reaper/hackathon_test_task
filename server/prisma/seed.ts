@@ -61,7 +61,7 @@ const main = async () => {
         name: `Lot #${i}`,
         startBid: randomInt(100, 500),
         minPitch: randomInt(1, 50),
-        closesAt: new Date(),
+        closesAt: new Date('2024-02-17'),
         sellerId: user.id,
         categories: {
           create: [
